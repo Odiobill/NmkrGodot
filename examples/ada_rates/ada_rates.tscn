@@ -1,0 +1,97 @@
+[gd_scene load_steps=3 format=3 uid="uid://6gkp874buynv"]
+
+[ext_resource type="Script" path="res://examples/ada_rates/ada_rates.gd" id="1_v8bvj"]
+[ext_resource type="Script" path="res://addons/nmkr/nmkr.gd" id="2_fauak"]
+
+[node name="AdaRates" type="Control" node_paths=PackedStringArray("update_button", "usd", "eur", "jpy", "btc")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v8bvj")
+update_button = NodePath("Button")
+usd = NodePath("MarginContainer/VBoxContainer/USD Label")
+eur = NodePath("MarginContainer/VBoxContainer/EUR Label")
+jpy = NodePath("MarginContainer/VBoxContainer/JPY Label")
+btc = NodePath("MarginContainer/VBoxContainer/BTC Label")
+
+[node name="NMKR" type="Node" parent="."]
+script = ExtResource("2_fauak")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 128
+theme_override_constants/margin_right = 128
+
+[node name="Title Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_shadow_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 64
+text = "Current ADA Rates"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="USD Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "0.00 USD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EUR Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "0.00 EUR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="JPY Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "0.00 JPY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BTC Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "0.00 BTC"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -122.0
+offset_top = -53.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Update"
