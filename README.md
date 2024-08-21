@@ -20,7 +20,7 @@ the *Project Settings* and search for **Nmkr** (you may need to activate the
 *Advanced Settings* toggle for it to show up). Click on *Config* and add your key(s)
 in the input field(s).
 
-##Code Examples
+## Code Examples
 Each available method will emit a signal as soon as the request is completed. You can either
 *await* the corresponding signal for synchronous requests or connect a callback function
 to it. If you only need to perform consequential synchronous requests, you can also wait for the
@@ -61,7 +61,7 @@ func _on_get_ada_rates_completed(result: Dictionary):
 ```
 
 
-##Conventions used in the NMKR SDK for Godot
+## Conventions used in the NMKR SDK for Godot
 The *NMKR custom node* is a GDScript class that exposes both a public *method* and a
 *custom signal* for each of the available endpoints in the **NMKR API**, as documented
 in the [NMKR Swagger](https://studio-api.nmkr.io/swagger/index.html).
@@ -85,7 +85,7 @@ func add_payout_wallet(walletaddress)
 ```
 
 
-##Passing data to POST and PUT requests
+## Passing data to POST and PUT requests
 To pass the required data to the endpoints that are accessible with the POST or PUT methods, you
 can simply define a *Dictionary* with the necessary key/value pairs, and pass it to the
 desired function after the other required parameters. The name of this parameter is always
@@ -96,7 +96,7 @@ check_metadata(nftuid, { "metadata": "string" })
 ```
 
 
-##Optional parameters
+## Optional parameters
 Some of the endpoints accept optional parameters. In that case, when needed, you can define a
 *Dictionary* with all the optional parameters that you need, and pass it to the desired
 function after all the required ones. The name of this parameter is always "optional" for all the
@@ -108,18 +108,18 @@ get_customer_transaction(customerid, { "exportOptions": "Csv" })
 
 
 
-##Implemented functions
+## Implemented functions
 Please refer to the offical [NMKR Swagger](https://studio-api.nmkr.io/swagger/index.html) for more
 details about the available endpoints.
 Each function will return a *Dictionary* when used as a coroutine.
 
-###Customer
+### Customer
 - func add_payout_wallet(walletaddress := "")
 - func get_customer_transactions(customerid: int = 0, optional := {})
 - func get_mint_coupon_balance()
 - func get_payout_wallets()
 
-###Tools
+### Tools
 - func get_ada_rates()
 - func get_all_assets_in_wallet(address := "")
 - func get_amount_of_specific_token_in_wallet(address := "", policyid := "", tokenname := "", data := {})
