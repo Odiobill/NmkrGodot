@@ -56,7 +56,7 @@ func display_rates():
 
 
 func _on_update_button_pressed():
-	print("Button pressed")
+	#print("Button pressed")
 	update_button.disabled = true
 	usd.text = "--- USD"
 	eur.text = "--- EUR"
@@ -73,6 +73,7 @@ func _on_update_button_pressed():
 func _on_get_ada_rates(result: Dictionary):
 	update_button.disabled = false
 	
+	#print(result)
 	usd.text = str(result.usdRate) + " USD"
 	eur.text = str(result.eurRate) + " EUR"
 	jpy.text = str(result.jpyRate) + " JPY"

@@ -78,6 +78,12 @@ extends Node
 
 # General
 signal completed(result: Dictionary)
+# Customer
+signal add_payout_wallet_completed(result: Dictionary)
+signal get_customer_transactions_completed(result: Dictionary)
+signal get_mint_coupon_balance_completed(result: Dictionary)
+signal get_payout_wallets_completed(result: Dictionary)
+# ... #
 # Tools
 signal get_ada_rates_completed(result: Dictionary)
 signal get_all_asstes_in_wallet_completed(result: Dictionary)
@@ -151,6 +157,69 @@ func _ready():
 
 
 
+# Customer
+
+## With this call you can add a payout wallet in your account. You have to confirm the wallet
+## by clicking the link in the email
+func add_payout_wallet(walletaddress := "") -> Dictionary:
+	var sig := add_payout_wallet_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif not walletaddress.begins_with("addr"):
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/AddPayoutWallet/" + walletaddress
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns all Transaction of a customer
+func get_customer_transactions(customerid: int = 0, optional := {}) -> Dictionary:
+	var sig := get_customer_transactions_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetCustomerTransactions/" + str(customerid)
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## Returns the count of mint coupons in your account
+func get_mint_coupon_balance() -> Dictionary:
+	var sig := get_mint_coupon_balance_completed
+	
+	if current_key < 0:
+		_trigger_error(sig)
+	else:
+		var url := BASE_URL + "/v2/GetMintCouponBalance"
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns all payout wallets in your account
+func get_payout_wallets() -> Dictionary:
+	var sig := get_payout_wallets_completed
+	
+	if current_key < 0:
+		_trigger_error(sig)
+	else:
+		var url := BASE_URL + "/v2/GetPayoutWallets"
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
 # Tools
 
 
@@ -169,7 +238,7 @@ func get_ada_rates() -> Dictionary:
 
 
 ## Returns all assets that are in a wallet
-func get_all_assets_in_wallet(address := ""):
+func get_all_assets_in_wallet(address := "") -> Dictionary:
 	var sig := get_all_asstes_in_wallet_completed
 	
 	if current_key < 0:
@@ -186,7 +255,7 @@ func get_all_assets_in_wallet(address := ""):
 
 ## Returns the quantity of a specific token in a wallet. Leave the "address" field as an empty
 ## string if you want to provide the required data as a dictionary using the POST request.
-func get_amount_of_specific_token_in_wallet(address := "", policyid := "", tokenname := "", data := {}):
+func get_amount_of_specific_token_in_wallet(address := "", policyid := "", tokenname := "", data := {}) -> Dictionary:
 	var sig := get_amount_of_specific_token_in_wallet_completed
 	
 	if current_key < 0:
@@ -209,7 +278,7 @@ func get_amount_of_specific_token_in_wallet(address := "", policyid := "", token
 
 
 ## Returns the Token Registry Information for a specific token (if available)
-func get_cardano_token_registry_information(policyid := "", tokenname := ""):
+func get_cardano_token_registry_information(policyid := "", tokenname := "") -> Dictionary:
 	var sig := get_cardano_token_registry_information_completed
 	
 	if current_key < 0:
@@ -225,7 +294,7 @@ func get_cardano_token_registry_information(policyid := "", tokenname := ""):
 
 
 ## Returns the Metadata for a specific token
-func get_metadata_for_token(policyid := "", tokennamehex := ""):
+func get_metadata_for_token(policyid := "", tokennamehex := "") -> Dictionary:
 	var sig := get_metadata_for_token_completed
 	
 	if current_key < 0:
@@ -241,7 +310,7 @@ func get_metadata_for_token(policyid := "", tokennamehex := ""):
 
 
 ## Returns the IPFS Hash of the preview image for a specific token
-func get_preview_image_for_token(policyid := "", tokennamehex := ""):
+func get_preview_image_for_token(policyid := "", tokennamehex := "") -> Dictionary:
 	var sig := get_preview_image_for_token_completed
 	
 	if current_key < 0:

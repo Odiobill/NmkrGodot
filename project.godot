@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="NmkrGodot"
-config/features=PackedStringArray("4.2", "GL Compatibility")
+config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [editor_plugins]
@@ -20,7 +20,7 @@ enabled=PackedStringArray("res://addons/nmkr/plugin.cfg")
 
 [nmkr]
 
-config/global/api_keys=PackedStringArray("b387bdce3b1d47f7ba98282917c3820b")
+config/global/api_keys=PackedStringArray()
 config/global/debug=true
 
 [rendering]
