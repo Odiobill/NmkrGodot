@@ -126,3 +126,22 @@ Each function will return a *Dictionary* when used as a coroutine.
 - func get_cardano_token_registry_information(policyid := "", tokenname := "")
 - func get_metadata_for_token(policyid := "", tokennamehex := "")
 - func get_preview_image_for_token(policyid := "", tokennamehex := "")
+
+### NFT
+- func block_unblock_nft(nftuid := "", block_nft := true)
+- func check_metadata(nftuid := "", data := {})
+- func delete_all_nfts_from_project(projectuid := "")
+- func delete_nft(nftuid := "")
+- func duplicate_nft(nftuid := "", data := {})
+- func get_nft_details_by_id(nftuid := "")
+- func get_nft_details_by_tokenname(projectuid := "", nftname := "")
+- func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, optional := {})
+- func update_metadata(projectuid := "", nftuid := "", data := {})
+- func upload_nft(projectuid := "", data := {}, optional := {})
+
+### Address reservation (sale)
+- func cancel_address_reservation(projectuid := "", paymentaddress := "")
+- func check_address(projectuid := "", address := "")
+- func check_address_with_customproperty(projectuid := "", customproperty := "")
+- func get_payment_address_for_random_nft_sale(projectuid := "", countnft: int = 1, lovelace: int = -1, optional := {})
+- func get_payment_address_for_specific_nft_sale(nftuid := "", tokencount: int = 0, lovelace: int = -1, data := {}, optional := {})

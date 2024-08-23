@@ -83,6 +83,24 @@ signal add_payout_wallet_completed(result: Dictionary)
 signal get_customer_transactions_completed(result: Dictionary)
 signal get_mint_coupon_balance_completed(result: Dictionary)
 signal get_payout_wallets_completed(result: Dictionary)
+# NFT
+signal block_unblock_nft_completed(result: Dictionary)
+signal check_metadata_completed(result: Dictionary)
+signal delete_all_nfts_from_project_completed(result: Dictionary)
+signal delete_nft_completed(result: Dictionary)
+signal duplicate_nft_completed(result: Dictionary)
+signal get_nft_details_by_id_completed(result: Dictionary)
+signal get_nft_details_by_tokenname_completed(result: Dictionary)
+signal get_nfts_completed(result: Dictionary)
+signal update_metadata_completed(result: Dictionary)
+signal upload_nft_completed(result: Dictionary)
+# Address reservation (sale)
+signal cancel_address_reservation_completed(result: Dictionary)
+signal check_address_completed(result: Dictionary)
+signal check_address_with_customproperty_completed(result: Dictionary)
+signal get_payment_address_for_random_nft_sale_completed(result: Dictionary)
+signal get_payment_address_for_specific_nft_sale_completed(result: Dictionary)
+
 # ... #
 # Tools
 signal get_ada_rates_completed(result: Dictionary)
@@ -156,7 +174,6 @@ func _ready():
 #	pass
 
 
-
 # Customer
 
 ## With this call you can add a payout wallet in your account. You have to confirm the wallet
@@ -215,6 +232,264 @@ func get_payout_wallets() -> Dictionary:
 	else:
 		var url := BASE_URL + "/v2/GetPayoutWallets"
 		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# NFT
+
+## You can block an nft, if it is not already sold or reserved and you can unblock blocked nfts
+func block_unblock_nft(nftuid := "", block_nft := true) -> Dictionary:
+	var sig := block_unblock_nft_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif nftuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/BlockUnblockNft/" + nftuid + "/" + str(block_nft)
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Check if the metadata are valid
+func check_metadata(nftuid := "", data := {}) -> Dictionary:
+	var sig := check_metadata_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif nftuid.length() == 0 or not data.has("metadata"):
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckMetadata/" + nftuid
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## This function deletes all NFTs from a project. You can delete a nft, if it is not in sold or reserved state. All other nfts will be deleted.
+func delete_all_nfts_from_project(projectuid := "") -> Dictionary:
+	var sig := delete_all_nfts_from_project_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/DeleteAllNftsFromProject/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You can delete a nft, if it is not in sold or reserved state
+func delete_nft(nftuid := "") -> Dictionary:
+	var sig := delete_nft_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif nftuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/DeleteNft/" + nftuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Duplicates a nft/token inside a project. If a token already exists, it will be skipped
+func duplicate_nft(nftuid := "", data := {}) -> Dictionary:
+	var sig := duplicate_nft_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif nftuid.length() == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/DuplicateNft/" + nftuid
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## You will receive all information (fingerprint, ipfshash, etc.) about one nfts with the submitted id
+func get_nft_details_by_id(nftuid := "") -> Dictionary:
+	var sig := get_nft_details_by_id_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif nftuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetNftDetailsById/" + nftuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will receive all information (fingerprint, ipfshash, etc.) about one nft with the submitted name
+func get_nft_details_by_tokenname(projectuid := "", nftname := "") -> Dictionary:
+	var sig := get_nft_details_by_tokenname_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or nftname == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetNftDetailsByTokenname/" + projectuid + "/" + nftname
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will receive all information (fingerprint, ipfshash, etc.) about the nfts within a specific state. State "all" lists all available nft in this project. The other states are: "free", "reserved", "sold" and "error"
+func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, optional := {}) -> Dictionary:
+	var sig := get_nfts_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or state.length() == 0 or count <= 0 or page < 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetNfts/" + projectuid + "/" + state + "/" + str(count) + "/" + str(page)
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## With this API you can update the Metadata Override for one specific NFT If you leave the field blank, the Metadata override will be deleted and the Metadata from the project will be used.
+func update_metadata(projectuid := "", nftuid := "", data := {}) -> Dictionary:
+	var sig := update_metadata_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or nftuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UpdateMetadata/" + projectuid + "/" + nftuid
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## With this API you can upload a file to IPFS and add it to a project. You can upload the file as BASE64 Content or as URL Link or as IPFS Hash. If you submit Metadata, this Metadata will be used instead of the Metadatatemplate from the project. You can either submit Metadata or MetadataPlaceholder, but not both (because it makes no sense). The Metadata field is optional and if you dont use it, it will use the Template from your project. It is poosible to mix both versions in one project. You can have one nft with own metadata and other nfts with the template.
+func upload_nft(projectuid := "", data := {}, optional := {}) -> Dictionary:
+	var sig := upload_nft_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UploadNft/" + projectuid
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+# Address reservation (sale)
+
+## When you call this API, the reservation of all nfts dedicated to this address will released to free state. This function can be called, when a user closes his browser or when he hit on a "Cancel Reservation" Button
+func cancel_address_reservation(projectuid := "", paymentaddress := "") -> Dictionary:
+	var sig := cancel_address_reservation_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or paymentaddress == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CancelAddressReservation/" + projectuid + "/" + paymentaddress
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You can call this api to check if a user has paid to this particular address or if the address has expired. The reserved/sold NFTs will only filled after the amount was fully paid. This is for security reasons. In the reserved state, only the nft ids and tokenamount are submitted.[br]
+## IMPORTANT: This function uses an internal cache. All results will be cached for 10 seconds. You do not need to call this function more than once in 10 seconds, because the results will be the same.
+func check_address(projectuid := "", address := "") -> Dictionary:
+	var sig := check_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or address == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckAddress/" + projectuid + "/" + address
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You can call this api to check if a user has paid to a particular address with a custom property or if the address has expired. The reserved/sold NFTs will only filled after the amount was fully paid. This is for security reasons. In the reserved state, only the nft ids and tokenamount are submitted.[br]
+## IMPORTANT: This function uses an internal cache. All results will be cached for 10 seconds. You do not need to call this function more than once in 10 seconds, because the results will be the same.
+func check_address_with_customproperty(projectuid := "", customproperty := "") -> Dictionary:
+	var sig := check_address_with_customproperty_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or customproperty == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckAddressWithCustomproperty/" + projectuid + "/" + customproperty
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## When you call this API, you will receive an address where the buyer has to pay the amount of ada you define. The address will be monitored until it exipred. The count of nft will be reserved until it expires or the buyer has send the ada to this address. If the buyer has send the amount of ada, the nfts will be minted and send to his senderaddress and the nfts state changes to sold.[br]
+## IMPORTANT: Please notice, that the call is limited to 300 addressreservations per minute. You will get the error 429 if you call this routine more than 300 times a minute. Please do not implement this function on your start page. And please prevent the call of this function from bots with a captcha.
+func get_payment_address_for_random_nft_sale(projectuid := "", countnft: int = 1, lovelace: int = -1, optional := {}) -> Dictionary:
+	var sig := get_payment_address_for_random_nft_sale_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or countnft < 1:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetPaymentAddressForRandomNftSale/" + projectuid + "/" + str(countnft)
+		if lovelace >= 0:
+			url += "/" + str(lovelace)
+		
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## When you call this API, you will receive an address where the buyer has to pay the amount of ada you define. The address will be monitored until it exipred. The count of nft will be reserved until it expires or the buyer has send the ada to this address. If the buyer has send the amount of ada, the nfts will be minted and send to his senderaddress and the nfts state changes to sold.[br]
+## Keep the first 3 parameters to the defaults for using the POST version of the endpoint, and set "data" accordingly
+func get_payment_address_for_specific_nft_sale(nftuid := "", tokencount: int = 0, lovelace: int = -1, data := {}, optional := {}) -> Dictionary:
+	var sig := get_payment_address_for_specific_nft_sale_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif (data.size() == 0 and (nftuid.length() == 0 or tokencount < 1)) \
+	or (data.size() > 0 and (nftuid.length() > 0 or tokencount > 0 or lovelace >= 0)):
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetPaymentAddressForRandomNftSale"
+		if (data.size() > 0):
+			_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig, data)
+		else:
+			url += "/" + nftuid + "/" + str(tokencount)
+			if lovelace >= 0:
+				url += "/" + str(lovelace)
+			_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
 	return result
