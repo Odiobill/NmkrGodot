@@ -1,5 +1,3 @@
-@tool
-class_name NMKR
 ## A Godot plugin that is a wrapper of the NMKR API to create more integrated minting experiences.
 ##
 ## The [b]NMKR SDK for Godot[/b] addresses the need for seamless integration of Cardano's NFT
@@ -24,16 +22,16 @@ class_name NMKR
 ## generic [i]completed[/i] signal instead of having to specify a specific one after each call.
 ## [br][br]
 ## Example with [i]await[/i]:
-## [br][code]
+## [br][codeblock]
 ## @onready var nmkr: Nmkr = $NMKR
 ##
 ## func _ready():
 ##     nmkr.get_ada_rates()
 ##     await nmkr.get_ada_rates_completed # or just "await nmkr.completed"
 ##     print(nmkr.result)
-## [/code][br][br]
+## [/codeblock][br][br]
 ## Example with a [i]callback[/i] function:
-## [br][code]
+## [br][codeblock]
 ## @onready var nmkr: Nmkr = $NMKR
 ##
 ## func _ready():
@@ -42,7 +40,7 @@ class_name NMKR
 ##
 ## func _on_get_ada_rates_completed(result: Dictionary):
 ##     print(result)
-## [/code]
+## [/codeblock]
 ## [br][br][br]
 ## [b]Conventions used in the NMKR SDK for Godot[/b][br]
 ## The [i]NMKR custom node[/i] is a GDScript class that exposes both a public [i]method[/i] and a
@@ -58,22 +56,24 @@ class_name NMKR
 ## [url=https://studio-api.nmkr.io/swagger/index.html]NMKR Swagger[/url], is expected to be provided
 ## to the functions with the same name. For example, if you want to access the
 ## [code]/v2/AddPayoutWallet/{walletaddress}[/code] endpoint, you will the following function:
-## [code]func add_payout_wallet(walletaddress)[/code]
+## [codeblock]func add_payout_wallet(walletaddress)[/codeblock]
 ## [br][br]
 ## [b]Passing data to POST and PUT requests[/b][br]
 ## To pass the required data to the endpoints that are accessible with the POST or PUT methods, you
 ## can simply define a [i]Dictionary[/i] with the necessary key/value pairs, and pass it to the
 ## desired function after the other required parameters. The name of this parameter is always
 ## "data" for all the available functions that use POST or PUT methods. Example:[br]
-## [code]check_metadata(nftuid, { "metadata": "string" })[/code]
+## [codeblock]check_metadata(nftuid, { "metadata": "string" })[/codeblock]
 ## [br][br]
 ## [b]Optional parameters[/b][br]
 ## Some of the endpoints accept optional parameters. In that case, when needed, you can define a
 ## [i]Dictionary[/i] with all the optional parameters that you need, and pass it to the desired
 ## function after all the required ones. The name of this parameter is always "optional" for all the
 ## available functions that allow specifying optional parameters. Example:[br]
-## [code]get_customer_transaction(customerid, { "exportOptions": "Csv" })[/code]
+## [codeblock]get_customer_transaction(customerid, { "exportOptions": "Csv" })[/codeblock]
 
+@tool
+class_name NMKR
 extends Node
 
 # General
@@ -100,15 +100,41 @@ signal check_address_completed(result: Dictionary)
 signal check_address_with_customproperty_completed(result: Dictionary)
 signal get_payment_address_for_random_nft_sale_completed(result: Dictionary)
 signal get_payment_address_for_specific_nft_sale_completed(result: Dictionary)
-
-# ... #
 # Tools
+signal check_if_eligible_for_discount_completed(result: Dictionary)
+signal check_if_sale_contidions_met_completed(result: Dictionary)
+signal check_utxo_completed(result: Dictionary)
+signal get_active_directsale_listings_completed(result: Dictionary)
 signal get_ada_rates_completed(result: Dictionary)
 signal get_all_asstes_in_wallet_completed(result: Dictionary)
 signal get_amount_of_specific_token_in_wallet_completed(result: Dictionary)
 signal get_cardano_token_registry_information_completed(result: Dictionary)
 signal get_metadata_for_token_completed(result: Dictionary)
+signal get_policy_snapshot_completed(result: Dictionary)
 signal get_preview_image_for_token_completed(result: Dictionary)
+signal get_royalty_information_completed(result: Dictionary)
+signal get_solana_rates_completed(result: Dictionary)
+# Wallet validation
+signal check_wallet_validation_completed(result: Dictionary)
+signal get_wallet_validation_address_completed(result: Dictionary)
+# Projects
+signal create_burning_address_completed(result: Dictionary)
+signal create_project_completed(result: Dictionary)
+signal delete_project_completed(result: Dictionary)
+signal get_counts_completed(result: Dictionary)
+signal get_discounts_completed(result: Dictionary)
+signal get_identity_accounts_completed(result: Dictionary)
+signal get_notifications_completed(result: Dictionary)
+signal get_pricelist_completed(result: Dictionary)
+signal get_project_details_completed(result: Dictionary)
+signal get_project_transactions_completed(result: Dictionary)
+signal get_refunds_completed(result: Dictionary)
+signal get_sale_conditions_completed(result: Dictionary)
+signal list_projects_completed(result: Dictionary)
+signal update_discounts_completed(result: Dictionary)
+signal update_notifications_completed(result: Dictionary)
+signal update_pricelist_completed(result: Dictionary)
+signal update_sale_conditions_completed(result: Dictionary)
 
 
 ## Internal error codes
@@ -497,6 +523,69 @@ func get_payment_address_for_specific_nft_sale(nftuid := "", tokencount: int = 0
 
 # Tools
 
+## Check if there applies a discount for an address
+func check_if_eligible_for_discount(projectuid := "", address := "", optional := {}) -> Dictionary:
+	var sig := check_if_eligible_for_discount_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or address == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckIfEligibleForDiscount/" + projectuid + "/" + address
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## Checks, if an address matches the sale conditions
+func check_if_sale_conditions_met(projectuid := "", address := "", countnft: int = 0) -> Dictionary:
+	var sig := check_if_sale_contidions_met_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or address.length() == 0 or countnft == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckIfSaleCondtionsMet/" + projectuid + "/" + address + "/" + str(countnft)
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns the utxo of an address
+func check_utxo(address := "") -> Dictionary:
+	var sig := check_utxo_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif address == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckUtxo/" + address
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## No description
+func get_active_directsale_listings(stakeaddress := "") -> Dictionary:
+	var sig := get_active_directsale_listings_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif stakeaddress == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetActiveDirectsaleListings/" + stakeaddress
+		_request(url, sig)
+	
+	await sig
+	return result
+
 
 ## Returns the actual price in EUR and USD for ADA
 func get_ada_rates() -> Dictionary:
@@ -584,6 +673,22 @@ func get_metadata_for_token(policyid := "", tokennamehex := "") -> Dictionary:
 	return result
 
 
+## You will receive all tokens and the holding addresses of a specific policyid
+func get_policy_snapshot(policyid := "", optional := {}) -> Dictionary:
+	var sig := get_policy_snapshot_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif policyid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetPolicySnapshot/" + policyid 
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
 ## Returns the IPFS Hash of the preview image for a specific token
 func get_preview_image_for_token(policyid := "", tokennamehex := "") -> Dictionary:
 	var sig := get_preview_image_for_token_completed
@@ -595,6 +700,349 @@ func get_preview_image_for_token(policyid := "", tokennamehex := "") -> Dictiona
 	else:
 		var url := BASE_URL + "/v2/GetPreviewImageForToken/" + policyid + "/" + tokennamehex
 		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will receive the rate in percent and the wallet address for the royalties (if applicable) of a specific policyid
+func get_royalty_information(policyid := "") -> Dictionary:
+	var sig := get_royalty_information_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif policyid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetRoyaltyInformation/" + policyid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns the actual price in EUR and USD for analOS
+func get_solana_rates() -> Dictionary:
+	var sig := get_solana_rates_completed
+	
+	if current_key < 0:
+		_trigger_error(sig)
+	else:
+		var url := BASE_URL + "/v2/GetSolanaRates"
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# Wallet validation
+
+## Here you can check the result of a wallet validation. The result are "notvalidated", "validated", "expired"
+func check_wallet_validation(validationuid := "") -> Dictionary:
+	var sig := check_wallet_validation_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif validationuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CheckWalletValidation/" + validationuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## When you call this API, you will receive an address for a wallet validation. The user can send any ada to this address and the ada (and tokens) will sent back to the sender. With the function CheckWalletValidation you can check the state of the address
+func get_wallet_validation_address(validationname := "") -> Dictionary:
+	var sig := get_wallet_validation_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	else:
+		var url := BASE_URL + "/v2/GetWalletValidationAddress"
+		
+		if validationname != "":
+			url += "/" + validationname
+		
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# Projects
+
+## When you call this endpoint, a Burning Address is created for this project. All NFTs associated with this project (same policyid) that are sent to this endpoint will be deleted (burned). All other NFTs will be sent back. The policy of the project must still be active.If it is already locked, it can no longer be deleted.
+func create_burning_address(projectuid := "", addressactiveinhours := "") -> Dictionary:
+	var sig := create_burning_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or addressactiveinhours == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CreateBurningAddress/" + projectuid + "/" + addressactiveinhours
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## With this Controller you can create a new project
+func create_project(data := {}) -> Dictionary:
+	var sig := create_project_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif data.size() == 0 or not data.has("projectname"):
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CreateProject"
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## With this call you can delete a project
+func delete_project(projectuid := "") -> Dictionary:
+	var sig := delete_project_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/DeleteProject/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will get the count of all sold, reserved and free nfts of a particular project
+func get_counts(projectuid := "") -> Dictionary:
+	var sig := get_counts_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetCounts/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## If you call this function, you will get all active discounts for this project
+func get_discounts(projectuid := "") -> Dictionary:
+	var sig := get_discounts_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetDiscounts/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns information about the identities (if the identity token was created) of a project
+func get_identity_accounts(projectuid := "") -> Dictionary:
+	var sig := get_identity_accounts_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetIdentityAccounts/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns the notifications for this project (project uid)
+func get_notifications(projectuid := "") -> Dictionary:
+	var sig := get_notifications_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetNotifications/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will get the predefined prices for one or more NFTs
+func get_pricelist(projectuid := "") -> Dictionary:
+	var sig := get_pricelist_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/Pricelist/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will receive all information about this project
+func get_project_details(projectuid := "") -> Dictionary:
+	var sig := get_project_details_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetProjectDetails/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns all Transactions of a project
+func get_project_transactions(projectuid := "", optional := {}) -> Dictionary:
+	var sig := get_project_transactions_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetProjectTransactions/" + projectuid 
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## Returns all refunds of a project
+func get_refunds(projectuid := "", optional := {}) -> Dictionary:
+	var sig := get_refunds_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetRefunds/" + projectuid 
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## If you call this funtion, you will get all active saleconditions for this project
+func get_sale_conditions(projectuid := "") -> Dictionary:
+	var sig := get_sale_conditions_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetSaleConditions/" + projectuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## You will receive a list with all of your projects.[br]
+## IMPORTANT: This function uses an internal cache. All results will be cached for 10 seconds. You do not need to call this function more than once in 10 seconds, because the results will be the same.
+func list_projects(count: int = 0, page: int = 0, optional := {}) -> Dictionary:
+	var sig := list_projects_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif count < 0 or page < 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/ListProjects"
+		if count > 0 and page >= 0:
+			url += "/" + str(count) + "/" + str(page)
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+	
+	await sig
+	return result
+
+
+## With this Controller you can update the discounts of a project. All old entries will be deleted. If you want to clear the discounts, just send an empty array
+func update_discounts(projectuid := "", data := {}) -> Dictionary:
+	var sig := update_discounts_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UpdateDiscounts/" + projectuid
+		_request(url, sig, data, HTTPClient.METHOD_PUT)
+	
+	await sig
+	return result
+
+
+## With this Controller you can update the notifications. All old entries will be deleted. If you want to clear the notifications, just send an empty array
+func update_notifications(projectuid := "", data := {}) -> Dictionary:
+	var sig := update_notifications_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UpdateNotifications/" + projectuid
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## With this Controller you can update a pricelist of a project. All old entries will be deleted. If you want to clear the pricelist, just send an empty array
+func update_pricelist(projectuid := "", data := {}) -> Dictionary:
+	var sig := update_pricelist_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UpdateDiscounts/" + projectuid
+		_request(url, sig, data, HTTPClient.METHOD_PUT)
+	
+	await sig
+	return result
+
+
+## With this Controller you can update the saleconditions of a project. All old entries will be deleted. If you want to clear the saleconditions, just send an empty array
+func update_sale_conditions(projectuid := "", data := {}) -> Dictionary:
+	var sig := update_sale_conditions_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid.length() == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UpdateSaleConditions/" + projectuid
+		_request(url, sig, data, HTTPClient.METHOD_PUT)
 	
 	await sig
 	return result

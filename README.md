@@ -145,3 +145,27 @@ Each function will return a *Dictionary* when used as a coroutine.
 - func check_address_with_customproperty(projectuid := "", customproperty := "")
 - func get_payment_address_for_random_nft_sale(projectuid := "", countnft: int = 1, lovelace: int = -1, optional := {})
 - func get_payment_address_for_specific_nft_sale(nftuid := "", tokencount: int = 0, lovelace: int = -1, data := {}, optional := {})
+
+### Wallet validation
+- func check_wallet_validation(validationuid := "")
+- func get_wallet_validation_address(validationname := "")
+
+### Projects
+- func create_burning_address(projectuid := "", addressactiveinhours := "")
+- func create_project(data := {})
+- func delete_project(projectuid := "")
+- func get_counts(projectuid := "")
+- func get_discounts(projectuid := "")
+- func get_identity_accounts(projectuid := "")
+- func get_notifications(projectuid := "")
+- func get_pricelist(projectuid := "")
+- func get_project_details(projectuid := "")
+- func get_project_transactions(projectuid := "", optional := {})
+- func get_refunds(projectuid := "", optional := {})
+- func get_sale_conditions(projectuid := "")
+- func list_projects(count: int = 0, page: int = 0, optional := {})
+- func update_discounts(projectuid := "", data := {})
+- func update_notifications(projectuid := "", data := {})
+- func update_pricelist(projectuid := "", data := {})
+- func update_sale_conditions(projectuid := "", data := {})
+
