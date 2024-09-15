@@ -103,7 +103,7 @@ function after all the required ones. The name of this parameter is always "opti
 available functions that allow specifying optional parameters. Example:
 
 ```
-get_customer_transaction(customerid, { "exportOptions": "Csv" })
+get_customer_transactions(customerid, { "exportOptions": "Csv" })
 ```
 
 
@@ -111,7 +111,8 @@ get_customer_transaction(customerid, { "exportOptions": "Csv" })
 ## Implemented functions
 Please refer to the offical [NMKR Swagger](https://studio-api.nmkr.io/swagger/index.html) for more
 details about the available endpoints.
-Each function will return a *Dictionary* when used as a coroutine.
+Most of the functions will return a *Dictionary* when used as a coroutine, some of them an
+Array[Dictionary] (ex. get_customer_transactions, get_nfts, etc).
 
 ### Customer
 - func add_payout_wallet(walletaddress := "")
@@ -150,6 +151,12 @@ Each function will return a *Dictionary* when used as a coroutine.
 - func check_wallet_validation(validationuid := "")
 - func get_wallet_validation_address(validationname := "")
 
+### Auctions
+- func create_auction(customerid := "", data := {})
+- func delete_auction(auctionuid := "")
+- func get_all_auctions(customerid := "")
+- func get_auction_state(auctionuid := "")
+
 ### Projects
 - func create_burning_address(projectuid := "", addressactiveinhours := "")
 - func create_project(data := {})
@@ -169,3 +176,7 @@ Each function will return a *Dictionary* when used as a coroutine.
 - func update_pricelist(projectuid := "", data := {})
 - func update_sale_conditions(projectuid := "", data := {})
 
+### Split Addresses
+- func create_split_address(customerid: int = 0, data := {})
+- func get_split_addresses(customerid: int = 0)
+- func update_split_address(customerid: int = 0, address := "", data := {})

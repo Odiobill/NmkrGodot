@@ -1,3 +1,6 @@
+@tool
+class_name NMKR extends Node
+
 ## A Godot plugin that is a wrapper of the NMKR API to create more integrated minting experiences.
 ##
 ## The [b]NMKR SDK for Godot[/b] addresses the need for seamless integration of Cardano's NFT
@@ -70,11 +73,7 @@
 ## [i]Dictionary[/i] with all the optional parameters that you need, and pass it to the desired
 ## function after all the required ones. The name of this parameter is always "optional" for all the
 ## available functions that allow specifying optional parameters. Example:[br]
-## [codeblock]get_customer_transaction(customerid, { "exportOptions": "Csv" })[/codeblock]
-
-@tool
-class_name NMKR
-extends Node
+## [codeblock]get_customer_transactions(customerid, { "exportOptions": "Csv" })[/codeblock]
 
 # General
 signal completed(result: Dictionary)
@@ -117,6 +116,11 @@ signal get_solana_rates_completed(result: Dictionary)
 # Wallet validation
 signal check_wallet_validation_completed(result: Dictionary)
 signal get_wallet_validation_address_completed(result: Dictionary)
+# Auctions
+signal create_auction_completed(result: Dictionary)
+signal delete_auction_completed(result: Dictionary)
+signal get_all_auctions_completed(result: Dictionary)
+signal get_auction_state_completed(result: Dictionary)
 # Projects
 signal create_burning_address_completed(result: Dictionary)
 signal create_project_completed(result: Dictionary)
@@ -135,6 +139,10 @@ signal update_discounts_completed(result: Dictionary)
 signal update_notifications_completed(result: Dictionary)
 signal update_pricelist_completed(result: Dictionary)
 signal update_sale_conditions_completed(result: Dictionary)
+# Split Addresses
+signal create_split_address_completed(result: Dictionary)
+signal get_split_addresses_completed(result: Dictionary)
+signal update_split_address_completed(result: Dictionary)
 
 
 ## Internal error codes
@@ -220,7 +228,7 @@ func add_payout_wallet(walletaddress := "") -> Dictionary:
 
 
 ## Returns all Transaction of a customer
-func get_customer_transactions(customerid: int = 0, optional := {}) -> Dictionary:
+func get_customer_transactions(customerid: int = 0, optional := {}) -> Array[Dictionary]:
 	var sig := get_customer_transactions_completed
 	
 	if current_key < 0:
@@ -250,7 +258,7 @@ func get_mint_coupon_balance() -> Dictionary:
 
 
 ## Returns all payout wallets in your account
-func get_payout_wallets() -> Dictionary:
+func get_payout_wallets() -> Array[Dictionary]:
 	var sig := get_payout_wallets_completed
 	
 	if current_key < 0:
@@ -378,7 +386,7 @@ func get_nft_details_by_tokenname(projectuid := "", nftname := "") -> Dictionary
 
 
 ## You will receive all information (fingerprint, ipfshash, etc.) about the nfts within a specific state. State "all" lists all available nft in this project. The other states are: "free", "reserved", "sold" and "error"
-func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, optional := {}) -> Dictionary:
+func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, optional := {}) -> Array[Dictionary]:
 	var sig := get_nfts_completed
 	
 	if current_key < 0:
@@ -602,7 +610,7 @@ func get_ada_rates() -> Dictionary:
 
 
 ## Returns all assets that are in a wallet
-func get_all_assets_in_wallet(address := "") -> Dictionary:
+func get_all_assets_in_wallet(address := "") -> Array[Dictionary]:
 	var sig := get_all_asstes_in_wallet_completed
 	
 	if current_key < 0:
@@ -771,6 +779,72 @@ func get_wallet_validation_address(validationname := "") -> Dictionary:
 	return result
 
 
+# Auctions
+
+## Creates a new legacy auction in the Cardano network
+func create_auction(customerid := "", data := {}) -> Dictionary:
+	var sig := create_auction_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == "" or data.size == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CreateAuction/" + customerid
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Deletes an auction - if the auction is not already started
+func delete_auction(auctionuid := "") -> Dictionary:
+	var sig := delete_auction_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif auctionuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/DeleteAuction/" + auctionuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns all auctions of the customer
+func get_all_auctions(customerid := "") -> Array[Dictionary]:
+	var sig := create_auction_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetAllAuctions/" + customerid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns the state - and the last bids of a auction project
+func get_auction_state(auctionuid := "") -> Dictionary:
+	var sig := get_auction_state_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif auctionuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetAuctionState/" + auctionuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
 # Projects
 
 ## When you call this endpoint, a Burning Address is created for this project. All NFTs associated with this project (same policyid) that are sent to this endpoint will be deleted (burned). All other NFTs will be sent back. The policy of the project must still be active.If it is already locked, it can no longer be deleted.
@@ -838,7 +912,7 @@ func get_counts(projectuid := "") -> Dictionary:
 
 
 ## If you call this function, you will get all active discounts for this project
-func get_discounts(projectuid := "") -> Dictionary:
+func get_discounts(projectuid := "") -> Array[Dictionary]:
 	var sig := get_discounts_completed
 	
 	if current_key < 0:
@@ -870,7 +944,7 @@ func get_identity_accounts(projectuid := "") -> Dictionary:
 
 
 ## Returns the notifications for this project (project uid)
-func get_notifications(projectuid := "") -> Dictionary:
+func get_notifications(projectuid := "") -> Array[Dictionary]:
 	var sig := get_notifications_completed
 	
 	if current_key < 0:
@@ -918,7 +992,7 @@ func get_project_details(projectuid := "") -> Dictionary:
 
 
 ## Returns all Transactions of a project
-func get_project_transactions(projectuid := "", optional := {}) -> Dictionary:
+func get_project_transactions(projectuid := "", optional := {}) -> Array[Dictionary]:
 	var sig := get_project_transactions_completed
 	
 	if current_key < 0:
@@ -934,7 +1008,7 @@ func get_project_transactions(projectuid := "", optional := {}) -> Dictionary:
 
 
 ## Returns all refunds of a project
-func get_refunds(projectuid := "", optional := {}) -> Dictionary:
+func get_refunds(projectuid := "", optional := {}) -> Array[Dictionary]:
 	var sig := get_refunds_completed
 	
 	if current_key < 0:
@@ -950,7 +1024,7 @@ func get_refunds(projectuid := "", optional := {}) -> Dictionary:
 
 
 ## If you call this funtion, you will get all active saleconditions for this project
-func get_sale_conditions(projectuid := "") -> Dictionary:
+func get_sale_conditions(projectuid := "") -> Array[Dictionary]:
 	var sig := get_sale_conditions_completed
 	
 	if current_key < 0:
@@ -967,7 +1041,7 @@ func get_sale_conditions(projectuid := "") -> Dictionary:
 
 ## You will receive a list with all of your projects.[br]
 ## IMPORTANT: This function uses an internal cache. All results will be cached for 10 seconds. You do not need to call this function more than once in 10 seconds, because the results will be the same.
-func list_projects(count: int = 0, page: int = 0, optional := {}) -> Dictionary:
+func list_projects(count: int = 0, page: int = 0, optional := {}) -> Array[Dictionary]:
 	var sig := list_projects_completed
 	
 	if current_key < 0:
@@ -1042,6 +1116,56 @@ func update_sale_conditions(projectuid := "", data := {}) -> Dictionary:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
 		var url := BASE_URL + "/v2/UpdateSaleConditions/" + projectuid
+		_request(url, sig, data, HTTPClient.METHOD_PUT)
+	
+	await sig
+	return result
+
+
+# Split Addresses
+
+## Creates a split address
+func create_split_address(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := create_split_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CreateSplitAddress/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Returns all split addresses from a customer account
+func get_split_addresses(customerid: int = 0) -> Array[Dictionary]:
+	var sig := get_split_addresses_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetSplitAddresses/" + str(customerid)
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Updates a split address
+func update_split_address(customerid: int = 0, address := "", data := {}) -> Dictionary:
+	var sig := update_split_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or address == "" or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UpdateSplitAddress/" + str(customerid) + "/" + address
 		_request(url, sig, data, HTTPClient.METHOD_PUT)
 	
 	await sig
