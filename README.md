@@ -5,25 +5,32 @@ A Godot plugin for accessing the NMKR Studio API
 Please check our [https://cardano.ideascale.com/c/idea/119196](Catalyst Proposal) for more details.
 
 
-The **NMKR SDK for Godot** addresses the need for seamless integration of Cardano's NFT
+The **NMKR SDK for Godot** addresses the need for seamless integration of NFTs and other blockchain
 capabilities in the gaming industry, particularly targeting indie game developers using Godot.
 
-By developing a Godot plugin for NMKR's NFT minting API, we facilitate easier Cardano adoption,
-potentially increasing both the number of NFTs minted and the transactions within the Cardano
-network. With this tool, we aim to attract new developers and users to the Cardano ecosystem,
+By developing a Godot plugin for NMKR's API, we facilitate easier Web3 adoption, potentially
+increasing both the number of NFTs minted and the transactions within the Cardano network, with
+other blockchains being on the NMKR roadmap, starting with Solana.
+
+With this tool, we aim to attract new developers and users to the blockchain ecosystem,
 broadening its user base, while facilitating the implementation of NFT technology for the game
 developers who are adopting different revenue models.
 
-Before using this plugin in your projects, **you need to have at least an API Key** configured
-in the [NMKR Studio console](https://studio.nmkr.io/apikeys). Copy your key, then open
-the *Project Settings* and search for **Nmkr** (you may need to activate the
-*Advanced Settings* toggle for it to show up). Click on *Config* and add your key(s)
-in the input field(s).
+
+## Setup instructions
+- Copy the *addons* directory and its content (*addons/nmkr*) to the root of your project
+- Before using this plugin in your projects, **you need to have at least an API Key** configured
+in the [NMKR Studio console](https://studio.nmkr.io/apikeys)
+- Copy your key, then open the *Project Settings* and search for **Nmkr** (you may need to activate
+the *Advanced Settings* toggle for it to show up)
+- Click on *Config* and add your key(s) in the input field(s).
+
 
 ## Code Examples
 Each available method will emit a signal as soon as the request is completed. You can either
-*await* the corresponding signal for synchronous requests or connect a callback function
-to it. If you only need to perform consequential synchronous requests, you can also wait for the
+*await* the corresponding signal or *await* directly on the function call for synchronous requests,
+or connect a callback function to it if you prefer async requests.
+If you only need to perform consequential synchronous requests, you can also wait for the
 generic *completed* signal instead of having to specify a specific one after each call.
 
 Example with *coroutines*:
@@ -81,7 +88,7 @@ to the functions with the same name. For example, if you want to access the
 endpoint, you will use the following function:
 
 ```
-func add_payout_wallet(walletaddress)
+add_payout_wallet(walletaddress)
 ```
 
 
@@ -180,3 +187,37 @@ Array[Dictionary] (ex. get_customer_transactions, get_nfts, etc).
 - func create_split_address(customerid: int = 0, data := {})
 - func get_split_addresses(customerid: int = 0)
 - func update_split_address(customerid: int = 0, address := "", data := {})
+
+### Vesting Addresses
+- func create_vesting_address(customerid: int = 0, data := {})
+- func get_utxo_from_vesting_address(customerid: int = 0, address := "")
+- func get_vesting_addresses(customerid: int = 0)
+
+### Managed Wallets
+- func create_wallet(customerid: int = 0, data := {})
+- func get_key_hash(customerid: int = 0, data := {})
+- func get_wallet_utxo(address := "")
+- func import_wallet(customerid: int = 0, data := {})
+- func list_all_wallets(customerid: int = 0)
+- func make_transaction(customerid: int = 0, data := {})
+- func send_all_assets(customerid: int = 0, data := {})
+
+### NMKR Pay
+- func get_nmkr_pay_link(data := {})
+- func get_nmkr_pay_status(paymenttransactionuid := "")
+
+### Misc
+- func get_public_mints()
+- func get_server_state()
+
+### Whitelists
+- func manage_whitelist(projectuid := "", address := "", countofnfts:int = 0, data := {})
+
+### Mint
+- func mint_and_send_random(projectuid := "", countnft: int = 0, receiveraddress := "")
+- func mint_and_send_specific(projectuid := "", nftuid := "", tokencount: int = 0, receiveraddress := "")
+- func mint_royalty_token(projectuid := "", royaltyaddress := "", percentage: float = 0)
+- func remint_and_burn(projectuid := "", nftuid := "")
+
+### IPFS
+- func upload_to_ipfs(customerid: int = 0, data := {})

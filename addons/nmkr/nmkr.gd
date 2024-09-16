@@ -143,6 +143,33 @@ signal update_sale_conditions_completed(result: Dictionary)
 signal create_split_address_completed(result: Dictionary)
 signal get_split_addresses_completed(result: Dictionary)
 signal update_split_address_completed(result: Dictionary)
+# Vesting Addresses
+signal create_vesting_address_completed(result: Dictionary)
+signal get_utxo_from_vesting_address_completed(result: Dictionary)
+signal get_vesting_addresses_completed(result: Array[Dictionary])
+# Managed Wallets
+signal create_wallet_completed(result: Dictionary)
+signal get_key_hash_completed(result: Dictionary)
+signal get_wallet_utxo_completed(result: Dictionary)
+signal import_wallet_completed(result: Dictionary)
+signal list_all_wallets_completed(result: Array[Dictionary])
+signal make_transaction_completed(result: Dictionary)
+signal send_all_assets_completed(result: Dictionary)
+# NMKR Pay
+signal get_nmkr_pay_link_completed(result: Dictionary)
+signal get_nmkr_pay_status_completed(result: Dictionary)
+# Misc
+signal get_public_mints_completed(result: Dictionary)
+signal get_server_state_completed(result: Dictionary)
+# Whitelists
+signal manage_whitelist_completed(result: Dictionary)
+# Mint
+signal mint_and_send_random_completed(result: Dictionary)
+signal mint_and_send_specific_completed(result: Dictionary)
+signal mint_royalty_token_completed(result: Dictionary)
+signal remint_and_burn_completed(result: Dictionary)
+# IPFS
+signal upload_to_ipfs_completed(result: Dictionary)
 
 
 ## Internal error codes
@@ -1167,6 +1194,350 @@ func update_split_address(customerid: int = 0, address := "", data := {}) -> Dic
 	else:
 		var url := BASE_URL + "/v2/UpdateSplitAddress/" + str(customerid) + "/" + address
 		_request(url, sig, data, HTTPClient.METHOD_PUT)
+	
+	await sig
+	return result
+
+
+# Vesting Addresses
+
+## Creates a vesting/staking address. Assets can be locked on a vesting address for a certain period of time.
+func create_vesting_address(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := create_vesting_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CreateSplitAddress/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Returns all vesting addresses from a customer account
+func get_utxo_from_vesting_address(customerid: int = 0, address := "") -> Dictionary:
+	var sig := get_utxo_from_vesting_address_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or address == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetUtxoFromVestingAddress/" + str(customerid) + "/" + address
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns all vesting addresses from a customer account
+func get_vesting_addresses(customerid: int = 0) -> Array[Dictionary]:
+	var sig := get_vesting_addresses_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetVestingAddresses/" + str(customerid)
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# Managed Wallets
+
+## Creates an Managed Wallet
+func create_wallet(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := create_wallet_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/CreateWallet/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Returns the key hash of a Managed Wallet
+func get_key_hash(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := get_key_hash_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetKeyHash/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Returns the utxo of a managed Wallet
+func get_wallet_utxo(address := "") -> Dictionary:
+	var sig := get_wallet_utxo_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif address == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetWalletUtxo/" + address
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Imports an Wallet
+func import_wallet(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := import_wallet_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/ImportWallet/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Lists all managed Wallets
+func list_all_wallets(customerid: int = 0) -> Array[Dictionary]:
+	var sig := list_all_wallets_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/ListAllWallets/" + str(customerid)
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Makes a transaction on a managed Wallet
+func make_transaction(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := make_transaction_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/MakeTransaction/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Send all ADA and all Tokens from a managed wallet to a receiver address
+func send_all_assets(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := send_all_assets_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/SendAllAssets/" + str(customerid)
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+# NMKR Pay
+
+## Returns a payment link for NMKR Pay
+func get_nmkr_pay_link(data := {}) -> Dictionary:
+	var sig := get_nmkr_pay_link_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif data.size() == 0 or not data.has("projectUid"):
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetNmkrPayLink"
+		_request(url, sig, data)
+	
+	await sig
+	return result
+
+
+## Returns the state of a payment link for NMKR Pay
+func get_nmkr_pay_status(paymenttransactionuid := "") -> Dictionary:
+	var sig := get_nmkr_pay_status_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif paymenttransactionuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetNmkrPayStatus/" + paymenttransactionuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# Misc
+
+func get_public_mints() -> Dictionary:
+	var sig := get_public_mints_completed
+	
+	if current_key < 0:
+		_trigger_error(sig)
+	else:
+		var url := BASE_URL + "/v2/GetPublicMints"
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+func get_server_state() -> Dictionary:
+	var sig := get_server_state_completed
+	
+	if current_key < 0:
+		_trigger_error(sig)
+	else:
+		var url := BASE_URL + "/v2/GetServerState"
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# Whitelists
+
+## Manages of a project whitelist. Set only projectuid to get (GET), projectuid + address
+## to delete (DELETE), projectuid + address + countofnfts to add (POST)
+func manage_whitelist(projectuid := "", address := "", countofnfts:int = 0, data := {}) -> Dictionary:
+	var sig := manage_whitelist_completed
+	
+	var url := BASE_URL + "/v2/ManageWhitelist/" + projectuid
+	var method: int = -1
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	else:
+		if projectuid != "" and address != "" and countofnfts > 0 and data.size() > 0:
+			method = HTTPClient.METHOD_POST
+		elif projectuid != "" and address != "" and countofnfts == 0 and data.size == 0:
+			method = HTTPClient.METHOD_DELETE
+		elif projectuid != "" and address == "" and countofnfts == 0 and data.size() == 0:
+			method = HTTPClient.METHOD_GET
+		else:
+			_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	
+	match method:
+		HTTPClient.METHOD_DELETE:
+			url += "/" + address
+		HTTPClient.METHOD_POST:
+			url += "/" + address + "/" + str(countofnfts)
+	
+	if method >= 0:
+		_request(url, sig, {}, method)
+	
+	await sig
+	return result
+
+
+# Mint
+
+## When you call this API, random NFTs will be selected, minted and send to an ada address. You will need ADA in your Account for the transaction and minting costs.
+func mint_and_send_random(projectuid := "", countnft: int = 0, receiveraddress := "") -> Dictionary:
+	var sig := mint_and_send_random_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "" or countnft == 0 or receiveraddress == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/MintAndSendRandom/" + projectuid + "/" + str(countnft) + "/" + receiveraddress
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## When you call this API, a specific NFT will be minted and send to an ada address. You will need ADA in your Account for the transaction and minting costs.
+func mint_and_send_specific(projectuid := "", nftuid := "", tokencount: int = 0, receiveraddress := "") -> Dictionary:
+	var sig := mint_and_send_specific_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "" or nftuid == "" or tokencount == 0 or receiveraddress == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/MintAndSendSpecific/" + projectuid + "/" + nftuid + "/" + str(tokencount) + "/" + receiveraddress
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## When you call this API, the royalty token for this project will be minted and send to a burning address. You have to specify the address for the royalties and the percentage of royalties. You need mint credits in your account. Only one royalty token can be minted for each project
+func mint_royalty_token(projectuid := "", royaltyaddress := "", percentage: float = 0) -> Dictionary:
+	var sig := mint_royalty_token_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "" or royaltyaddress == "" or percentage < 0 or percentage > 100:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/MintRoyaltyToken/" + projectuid + "/" + royaltyaddress + "/" + str(percentage)
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## When you call this API, you can update metadata of an already sold nft. The nft will be minted and send to a burning address
+func remint_and_burn(projectuid := "", nftuid := "") -> Dictionary:
+	var sig := remint_and_burn_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif projectuid == "" or nftuid == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/RemintAndBurn/" + projectuid + "/" + nftuid
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+# IPFS
+
+## With this API you can upload a file to IPFS. You can upload the file as BASE64 Content or as URL Link.
+func upload_to_ipfs(customerid: int = 0, data := {}) -> Dictionary:
+	var sig := upload_to_ipfs_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif customerid == 0 or data.size() == 0:
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/UploadToIpfs/" + str(customerid)
+		_request(url, sig, data)
 	
 	await sig
 	return result
