@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://dx1eg2ghoonvc"]
+
+[ext_resource type="Script" path="res://examples/test_framework/endpoint_item.gd" id="1_yhenl"]
+
+[node name="EndpointItem" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 48)
+theme_override_constants/separation = 10
+script = ExtResource("1_yhenl")
+
+[node name="Control Begin" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 18.0
+text = "function"
+clip_text = true
+
+[node name="TextEdit 1" type="TextEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 10.0
+
+[node name="TextEdit 2" type="TextEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 10.0
+
+[node name="TextEdit 3" type="TextEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 10.0
+
+[node name="TextEdit 4" type="TextEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 10.0
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+text = "GO!"
+
+[node name="Control End" type="Control" parent="."]
+layout_mode = 2

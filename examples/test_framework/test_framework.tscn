@@ -1,0 +1,577 @@
+[gd_scene load_steps=3 format=3 uid="uid://dn2myhrcsdvrm"]
+
+[ext_resource type="Script" path="res://addons/nmkr/nmkr.gd" id="1_8a1vq"]
+[ext_resource type="PackedScene" uid="uid://dx1eg2ghoonvc" path="res://examples/test_framework/endpoint_item.tscn" id="1_u41pp"]
+
+[node name="TestFramework" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NMKR" type="Node" parent="."]
+script = ExtResource("1_8a1vq")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TabContainer" type="TabContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 7.0
+current_tab = 0
+
+[node name="Customer" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Customer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="add_payout_wallet" parent="VSplitContainer/TabContainer/Customer/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("walletaddress")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_customer_transactions" parent="VSplitContainer/TabContainer/Customer/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_mint_coupon_balance" parent="VSplitContainer/TabContainer/Customer/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_payout_wallets" parent="VSplitContainer/TabContainer/Customer/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="NFT" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/NFT"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="block_unblock_nft" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("nftuid", "block_nft")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="check_metadata" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("nftuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="delete_all_nfts_from_project" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="delete_nft" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("nftuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="duplicate_nft" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("nftuid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_nft_details_by_tokenname" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "nftname")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_nfts" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "state", "count", "page")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="update_metadata" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "nftuid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="upload_nft" parent="VSplitContainer/TabContainer/NFT/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "data", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Reservation" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Reservation"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="cancel_address_reservation" parent="VSplitContainer/TabContainer/Reservation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "paymentaddress")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="check_address" parent="VSplitContainer/TabContainer/Reservation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "address")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="check_address_with_customproperty" parent="VSplitContainer/TabContainer/Reservation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "customproperty")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_payment_address_for_random_nft_sale" parent="VSplitContainer/TabContainer/Reservation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "countnft", "lovelace")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_payment_address_for_specific_nft_sale" parent="VSplitContainer/TabContainer/Reservation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("nftuid", "tokencount", "lovelace", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Tools" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Tools"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="check_if_eligible_for_discount" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "address", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="check_if_sale_conditions_met" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "address", "countnft")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="check_utxo" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("address", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_active_directsale_listings" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("stakeaddress")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_ada_rates" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_all_assets_in_wallet" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("address")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_amount_of_specific_token_in_wallet" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("address", "policyid", "tokenname", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_cardano_token_registry_information" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("policyid", "tokenname")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_metadata_for_token" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("policyid", "tokennamehex")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_policy_snapshot" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("policyid", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_preview_image_for_token" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("policyid", "tokennamehex")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_royalty_information" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("policyid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_solana_rates" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Validation" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Validation"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="check_wallet_validation" parent="VSplitContainer/TabContainer/Validation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("validationuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_wallet_validation_address" parent="VSplitContainer/TabContainer/Validation/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("validationname")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Auctions" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Auctions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="create_auction" parent="VSplitContainer/TabContainer/Auctions/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="delete_auction" parent="VSplitContainer/TabContainer/Auctions/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("auctionuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_all_auctions" parent="VSplitContainer/TabContainer/Auctions/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_auction_state" parent="VSplitContainer/TabContainer/Auctions/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("auctionuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Projects" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Projects"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="create_burning_address" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "addressactiveinhours")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="create_project" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="delete_project" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_counts" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_discounts" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_identity_accounts" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("policyid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_notifications" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_pricelist" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_project_details" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_project_transactions" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_refunds" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_sale_conditions" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="list_projects" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("count", "page", "optional")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="update_discounts" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="update_notifications" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="update_sale_conditions" parent="VSplitContainer/TabContainer/Projects/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("projectuid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Split" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 7
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Split"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="create_split_address" parent="VSplitContainer/TabContainer/Split/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_split_addresses" parent="VSplitContainer/TabContainer/Split/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="update_split_address" parent="VSplitContainer/TabContainer/Split/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "address", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Vesting" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Vesting"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="create_vesting_address" parent="VSplitContainer/TabContainer/Vesting/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_utxo_from_vesting_address" parent="VSplitContainer/TabContainer/Vesting/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "address")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_vesting_addresses" parent="VSplitContainer/TabContainer/Vesting/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Wallets" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 9
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Wallets"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="create_wallet" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_key_hash" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_wallet_utxo" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("address")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="import_wallet" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="list_all_wallets" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="make_transaction" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="send_all_assets" parent="VSplitContainer/TabContainer/Wallets/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("customerid", "data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Pay" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Pay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="get_nmkr_pay_link" parent="VSplitContainer/TabContainer/Pay/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("data")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_nmkr_pay_status" parent="VSplitContainer/TabContainer/Pay/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("paymenttransactionuid")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="Misc" type="ScrollContainer" parent="VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 11
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TabContainer/Misc"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="get_public_mints" parent="VSplitContainer/TabContainer/Misc/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="get_server_state" parent="VSplitContainer/TabContainer/Misc/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Label" type="Label" parent="VSplitContainer/ScrollContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+autowrap_mode = 1
+text_overrun_behavior = 1

@@ -76,12 +76,12 @@ class_name NMKR extends Node
 ## [codeblock]get_customer_transactions(customerid, { "exportOptions": "Csv" })[/codeblock]
 
 # General
-signal completed(result: Dictionary)
+signal completed(result)
 # Customer
 signal add_payout_wallet_completed(result: Dictionary)
-signal get_customer_transactions_completed(result: Array[Dictionary])
+signal get_customer_transactions_completed(result: Array)
 signal get_mint_coupon_balance_completed(result: Dictionary)
-signal get_payout_wallets_completed(result: Array[Dictionary])
+signal get_payout_wallets_completed(result: Array)
 # NFT
 signal block_unblock_nft_completed(result: Dictionary)
 signal check_metadata_completed(result: Dictionary)
@@ -90,7 +90,7 @@ signal delete_nft_completed(result: Dictionary)
 signal duplicate_nft_completed(result: Dictionary)
 signal get_nft_details_by_id_completed(result: Dictionary)
 signal get_nft_details_by_tokenname_completed(result: Dictionary)
-signal get_nfts_completed(result: Array[Dictionary])
+signal get_nfts_completed(result: Array)
 signal update_metadata_completed(result: Dictionary)
 signal upload_nft_completed(result: Dictionary)
 # Address reservation (sale)
@@ -105,7 +105,7 @@ signal check_if_sale_contidions_met_completed(result: Dictionary)
 signal check_utxo_completed(result: Dictionary)
 signal get_active_directsale_listings_completed(result: Dictionary)
 signal get_ada_rates_completed(result: Dictionary)
-signal get_all_asstes_in_wallet_completed(result: Array[Dictionary])
+signal get_all_asstes_in_wallet_completed(result: Array)
 signal get_amount_of_specific_token_in_wallet_completed(result: Dictionary)
 signal get_cardano_token_registry_information_completed(result: Dictionary)
 signal get_metadata_for_token_completed(result: Dictionary)
@@ -119,40 +119,40 @@ signal get_wallet_validation_address_completed(result: Dictionary)
 # Auctions
 signal create_auction_completed(result: Dictionary)
 signal delete_auction_completed(result: Dictionary)
-signal get_all_auctions_completed(result: Array[Dictionary])
+signal get_all_auctions_completed(result: Array)
 signal get_auction_state_completed(result: Dictionary)
 # Projects
 signal create_burning_address_completed(result: Dictionary)
 signal create_project_completed(result: Dictionary)
 signal delete_project_completed(result: Dictionary)
 signal get_counts_completed(result: Dictionary)
-signal get_discounts_completed(result: Array[Dictionary])
+signal get_discounts_completed(result: Array)
 signal get_identity_accounts_completed(result: Dictionary)
-signal get_notifications_completed(result: Array[Dictionary])
+signal get_notifications_completed(result: Array)
 signal get_pricelist_completed(result: Dictionary)
 signal get_project_details_completed(result: Dictionary)
-signal get_project_transactions_completed(result: Array[Dictionary])
-signal get_refunds_completed(result: Array[Dictionary])
-signal get_sale_conditions_completed(result: Array[Dictionary])
-signal list_projects_completed(result: Array[Dictionary])
+signal get_project_transactions_completed(result: Array)
+signal get_refunds_completed(result: Array)
+signal get_sale_conditions_completed(result: Array)
+signal list_projects_completed(result: Array)
 signal update_discounts_completed(result: Dictionary)
 signal update_notifications_completed(result: Dictionary)
 signal update_pricelist_completed(result: Dictionary)
 signal update_sale_conditions_completed(result: Dictionary)
 # Split Addresses
 signal create_split_address_completed(result: Dictionary)
-signal get_split_addresses_completed(result: Array[Dictionary])
+signal get_split_addresses_completed(result: Array)
 signal update_split_address_completed(result: Dictionary)
 # Vesting Addresses
 signal create_vesting_address_completed(result: Dictionary)
 signal get_utxo_from_vesting_address_completed(result: Dictionary)
-signal get_vesting_addresses_completed(result: Array[Dictionary])
+signal get_vesting_addresses_completed(result: Array)
 # Managed Wallets
 signal create_wallet_completed(result: Dictionary)
 signal get_key_hash_completed(result: Dictionary)
 signal get_wallet_utxo_completed(result: Dictionary)
 signal import_wallet_completed(result: Dictionary)
-signal list_all_wallets_completed(result: Array[Dictionary])
+signal list_all_wallets_completed(result: Array)
 signal make_transaction_completed(result: Dictionary)
 signal send_all_assets_completed(result: Dictionary)
 # NMKR Pay
@@ -255,7 +255,7 @@ func add_payout_wallet(walletaddress := "") -> Dictionary:
 
 
 ## Returns all Transaction of a customer
-func get_customer_transactions(customerid: int = 0, optional := {}) -> Array[Dictionary]:
+func get_customer_transactions(customerid: int = 0, optional := {}) -> Array:
 	var sig := get_customer_transactions_completed
 	
 	if current_key < 0:
@@ -285,7 +285,7 @@ func get_mint_coupon_balance() -> Dictionary:
 
 
 ## Returns all payout wallets in your account
-func get_payout_wallets() -> Array[Dictionary]:
+func get_payout_wallets() -> Array:
 	var sig := get_payout_wallets_completed
 	
 	if current_key < 0:
@@ -413,7 +413,7 @@ func get_nft_details_by_tokenname(projectuid := "", nftname := "") -> Dictionary
 
 
 ## You will receive all information (fingerprint, ipfshash, etc.) about the nfts within a specific state. State "all" lists all available nft in this project. The other states are: "free", "reserved", "sold" and "error"
-func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, optional := {}) -> Array[Dictionary]:
+func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, optional := {}) -> Array:
 	var sig := get_nfts_completed
 	
 	if current_key < 0:
@@ -425,6 +425,9 @@ func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, opt
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
+	
+	if _result is not Array:
+		_result = [ _result ]
 	return result
 
 
@@ -543,7 +546,7 @@ func get_payment_address_for_specific_nft_sale(nftuid := "", tokencount: int = 0
 	or (data.size() > 0 and (nftuid.length() > 0 or tokencount > 0 or lovelace >= 0)):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetPaymentAddressForRandomNftSale"
+		var url := BASE_URL + "/v2/GetPaymentAddressForSpecificNftSale"
 		if (data.size() > 0):
 			_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig, data)
 		else:
@@ -637,7 +640,7 @@ func get_ada_rates() -> Dictionary:
 
 
 ## Returns all assets that are in a wallet
-func get_all_assets_in_wallet(address := "") -> Array[Dictionary]:
+func get_all_assets_in_wallet(address := "") -> Array:
 	var sig := get_all_asstes_in_wallet_completed
 	
 	if current_key < 0:
@@ -841,7 +844,7 @@ func delete_auction(auctionuid := "") -> Dictionary:
 
 
 ## Returns all auctions of the customer
-func get_all_auctions(customerid := "") -> Array[Dictionary]:
+func get_all_auctions(customerid := "") -> Array:
 	var sig := create_auction_completed
 	
 	if current_key < 0:
@@ -939,7 +942,7 @@ func get_counts(projectuid := "") -> Dictionary:
 
 
 ## If you call this function, you will get all active discounts for this project
-func get_discounts(projectuid := "") -> Array[Dictionary]:
+func get_discounts(projectuid := "") -> Array:
 	var sig := get_discounts_completed
 	
 	if current_key < 0:
@@ -955,15 +958,15 @@ func get_discounts(projectuid := "") -> Array[Dictionary]:
 
 
 ## Returns information about the identities (if the identity token was created) of a project
-func get_identity_accounts(projectuid := "") -> Dictionary:
+func get_identity_accounts(policyid := "") -> Dictionary:
 	var sig := get_identity_accounts_completed
 	
 	if current_key < 0:
 		_trigger_error(sig, SdkError.INVALID_KEY)
-	elif projectuid == "":
+	elif policyid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetIdentityAccounts/" + projectuid
+		var url := BASE_URL + "/v2/GetIdentityAccounts/" + policyid
 		_request(url, sig)
 	
 	await sig
@@ -971,7 +974,7 @@ func get_identity_accounts(projectuid := "") -> Dictionary:
 
 
 ## Returns the notifications for this project (project uid)
-func get_notifications(projectuid := "") -> Array[Dictionary]:
+func get_notifications(projectuid := "") -> Array:
 	var sig := get_notifications_completed
 	
 	if current_key < 0:
@@ -1019,7 +1022,7 @@ func get_project_details(projectuid := "") -> Dictionary:
 
 
 ## Returns all Transactions of a project
-func get_project_transactions(projectuid := "", optional := {}) -> Array[Dictionary]:
+func get_project_transactions(projectuid := "", optional := {}) -> Array:
 	var sig := get_project_transactions_completed
 	
 	if current_key < 0:
@@ -1035,7 +1038,7 @@ func get_project_transactions(projectuid := "", optional := {}) -> Array[Diction
 
 
 ## Returns all refunds of a project
-func get_refunds(projectuid := "", optional := {}) -> Array[Dictionary]:
+func get_refunds(projectuid := "", optional := {}) -> Array:
 	var sig := get_refunds_completed
 	
 	if current_key < 0:
@@ -1051,7 +1054,7 @@ func get_refunds(projectuid := "", optional := {}) -> Array[Dictionary]:
 
 
 ## If you call this funtion, you will get all active saleconditions for this project
-func get_sale_conditions(projectuid := "") -> Array[Dictionary]:
+func get_sale_conditions(projectuid := "") -> Array:
 	var sig := get_sale_conditions_completed
 	
 	if current_key < 0:
@@ -1068,7 +1071,7 @@ func get_sale_conditions(projectuid := "") -> Array[Dictionary]:
 
 ## You will receive a list with all of your projects.[br]
 ## IMPORTANT: This function uses an internal cache. All results will be cached for 10 seconds. You do not need to call this function more than once in 10 seconds, because the results will be the same.
-func list_projects(count: int = 0, page: int = 0, optional := {}) -> Array[Dictionary]:
+func list_projects(count: int = 0, page: int = 0, optional := {}) -> Array:
 	var sig := list_projects_completed
 	
 	if current_key < 0:
@@ -1102,7 +1105,7 @@ func update_discounts(projectuid := "", data := {}) -> Dictionary:
 
 
 ## With this Controller you can update the notifications. All old entries will be deleted. If you want to clear the notifications, just send an empty array
-func update_notifications(projectuid := "", data := {}) -> Dictionary:
+func update_notifications(projectuid := "", data: Array = []) -> Dictionary:
 	var sig := update_notifications_completed
 	
 	if current_key < 0:
@@ -1134,7 +1137,7 @@ func update_pricelist(projectuid := "", data := {}) -> Dictionary:
 
 
 ## With this Controller you can update the saleconditions of a project. All old entries will be deleted. If you want to clear the saleconditions, just send an empty array
-func update_sale_conditions(projectuid := "", data := {}) -> Dictionary:
+func update_sale_conditions(projectuid := "", data: Array = []) -> Dictionary:
 	var sig := update_sale_conditions_completed
 	
 	if current_key < 0:
@@ -1168,7 +1171,7 @@ func create_split_address(customerid: int = 0, data := {}) -> Dictionary:
 
 
 ## Returns all split addresses from a customer account
-func get_split_addresses(customerid: int = 0) -> Array[Dictionary]:
+func get_split_addresses(customerid: int = 0) -> Array:
 	var sig := get_split_addresses_completed
 	
 	if current_key < 0:
@@ -1234,7 +1237,7 @@ func get_utxo_from_vesting_address(customerid: int = 0, address := "") -> Dictio
 
 
 ## Returns all vesting addresses from a customer account
-func get_vesting_addresses(customerid: int = 0) -> Array[Dictionary]:
+func get_vesting_addresses(customerid: int = 0) -> Array:
 	var sig := get_vesting_addresses_completed
 	
 	if current_key < 0:
@@ -1316,7 +1319,7 @@ func import_wallet(customerid: int = 0, data := {}) -> Dictionary:
 
 
 ## Lists all managed Wallets
-func list_all_wallets(customerid: int = 0) -> Array[Dictionary]:
+func list_all_wallets(customerid: int = 0) -> Array:
 	var sig := list_all_wallets_completed
 	
 	if current_key < 0:
@@ -1565,7 +1568,7 @@ func _get_valid_url(url: String, optional := {}) -> String:
 
 
 # Performs an http request
-func _request(url: String, sig: Signal, data := {}, method := HTTPClient.METHOD_GET):
+func _request(url: String, sig: Signal, data = {}, method := HTTPClient.METHOD_GET):
 	var http := _create_http_request()
 	var headers = _headers()
 	if data.size() > 0:
@@ -1599,6 +1602,8 @@ func _on_completed(res: int, code: int, _h: PackedStringArray, body: PackedByteA
 	
 	var text = body.get_string_from_utf8()
 	if res == HTTPRequest.RESULT_SUCCESS and code == HTTPClient.RESPONSE_OK:
+		if text.length() == 0:
+			text = "{\"completed\": true}"
 		Engine.print_error_messages = false
 		_result = JSON.parse_string(text)
 		Engine.print_error_messages = true
@@ -1607,6 +1612,7 @@ func _on_completed(res: int, code: int, _h: PackedStringArray, body: PackedByteA
 	else:
 		_result = {
 			"error": true,
+			"res": res,
 			"code": code,
 			"body": text,
 		}
