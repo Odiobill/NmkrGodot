@@ -160,7 +160,7 @@ signal get_nmkr_pay_link_completed(result: Dictionary)
 signal get_nmkr_pay_status_completed(result: Dictionary)
 # Misc
 signal get_public_mints_completed(result: Dictionary)
-signal get_server_state_completed(result: Dictionary)
+signal get_server_state_completed(result: Array)
 # Whitelists
 signal manage_whitelist_completed(result: Dictionary)
 # Mint
@@ -1415,7 +1415,7 @@ func get_public_mints() -> Dictionary:
 	return result
 
 
-func get_server_state() -> Dictionary:
+func get_server_state() -> Array:
 	var sig := get_server_state_completed
 	
 	if current_key < 0:

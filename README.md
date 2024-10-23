@@ -119,7 +119,7 @@ get_customer_transactions(customerid, { "exportOptions": "Csv" })
 Please refer to the offical [NMKR Swagger](https://studio-api.nmkr.io/swagger/index.html) for more
 details about the available endpoints.
 Most of the functions will return a *Dictionary* when used as a coroutine, some of them an
-Array[Dictionary] (ex. get_customer_transactions, get_nfts, etc).
+Array (ex. get_customer_transactions, get_nfts, etc).
 
 ### Customer
 - func add_payout_wallet(walletaddress := "")
