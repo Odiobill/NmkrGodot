@@ -81,4 +81,6 @@ func _check_param(text_edit: TextEdit):
 
 
 func _on_execute_button_pressed():
-	execute()
+	await execute()
+	
+	DisplayServer.clipboard_set(result.text)

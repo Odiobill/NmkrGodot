@@ -2,7 +2,7 @@
 A Godot plugin for accessing the NMKR Studio API
 
 
-Please check our [https://cardano.ideascale.com/c/idea/119196](Catalyst Proposal) for more details.
+Please check our [Catalyst Proposal](https://cardano.ideascale.com/c/idea/119196)) for more details.
 
 
 The **NMKR SDK for Godot** addresses the need for seamless integration of NFTs and other blockchain
