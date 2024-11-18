@@ -1,14 +1,17 @@
 @tool
 class_name NMKR extends Node
 
-## A Godot plugin that is a wrapper of the NMKR API to create more integrated minting experiences.
+## A Godot plugin for accessing the NMKR Studio API
 ##
-## The [b]NMKR SDK for Godot[/b] addresses the need for seamless integration of Cardano's NFT
-## capabilities in the gaming industry, particularly targeting indie game developers using Godot.
+## The [b]NMKR SDK for Godot[/b] addresses the need for seamless integration of NFTs and other
+## blockchain capabilities in the gaming industry, particularly targeting indie game developers
+## using Godot.
 ## [br][br]
-## By developing a Godot plugin for NMKR's NFT minting API, we facilitate easier Cardano adoption,
+## By developing a Godot plugin for NMKR's NFT minting API, we facilitate easier Web3 adoption,
 ## potentially increasing both the number of NFTs minted and the transactions within the Cardano
-## network. With this tool, we aim to attract new developers and users to the Cardano ecosystem,
+## network, with other blockchains being on the NMKR roadmap, starting with Solana.
+## [br][br]
+## With this tool, we aim to attract new developers and users to the blockchain ecosystem,
 ## broadening its user base, while facilitating the implementation of NFT technology for the game
 ## developers who are adopting different revenue models.
 ## [br][br]

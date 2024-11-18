@@ -25,6 +25,9 @@ in the [NMKR Studio console](https://studio.nmkr.io/apikeys)
 the *Advanced Settings* toggle for it to show up)
 - Click on *Config* and add your key(s) in the input field(s).
 
+You can find a video that covers the initial setup instructions here:
+	[Milestone 1 Proof of Achievement](https://youtu.be/zYt-qpAeA-0)
+
 
 ## Code Examples
 Each available method will emit a signal as soon as the request is completed. You can either
