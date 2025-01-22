@@ -114,6 +114,7 @@ signal get_cardano_token_registry_information_completed(result: Dictionary)
 signal get_metadata_for_token_completed(result: Dictionary)
 signal get_policy_snapshot_completed(result: Dictionary)
 signal get_preview_image_for_token_completed(result: Dictionary)
+signal get_rates_completed(result: Dictionary)
 signal get_royalty_information_completed(result: Dictionary)
 signal get_solana_rates_completed(result: Dictionary)
 # Wallet validation
@@ -740,6 +741,22 @@ func get_preview_image_for_token(policyid := "", tokennamehex := "") -> Dictiona
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
 		var url := BASE_URL + "/v2/GetPreviewImageForToken/" + policyid + "/" + tokennamehex
+		_request(url, sig)
+	
+	await sig
+	return result
+
+
+## Returns the actual price in EUR and USD for ADA, APT, SOL, ETH, etc.
+func get_rates(coin := "ADA") -> Dictionary:
+	var sig := get_rates_completed
+	
+	if current_key < 0:
+		_trigger_error(sig, SdkError.INVALID_KEY)
+	elif coin == "":
+		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
+	else:
+		var url := BASE_URL + "/v2/GetRates?coin=" + coin
 		_request(url, sig)
 	
 	await sig

@@ -240,6 +240,12 @@ parameters = PackedStringArray("policyid", "tokennamehex")
 nmkr = NodePath("../../../../../NMKR")
 result = NodePath("../../../../ScrollContainer/Label")
 
+[node name="get_rates" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
+layout_mode = 2
+parameters = PackedStringArray("coin")
+nmkr = NodePath("../../../../../NMKR")
+result = NodePath("../../../../ScrollContainer/Label")
+
 [node name="get_royalty_information" parent="VSplitContainer/TabContainer/Tools/VBoxContainer" node_paths=PackedStringArray("nmkr", "result") instance=ExtResource("1_u41pp")]
 layout_mode = 2
 parameters = PackedStringArray("policyid")
