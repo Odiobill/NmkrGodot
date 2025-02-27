@@ -20,8 +20,9 @@ enabled=PackedStringArray("res://addons/nmkr/plugin.cfg")
 
 [nmkr]
 
+config/global/base_url="https://studio-api.nmkr.io"
 config/global/api_keys=PackedStringArray()
-config/global/debug=true
+config/global/debug=false
 
 [rendering]
 

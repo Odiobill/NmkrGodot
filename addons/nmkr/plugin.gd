@@ -4,6 +4,12 @@ extends EditorPlugin
 const KEEP_SETTINGS := false
 const SETTINGS := [
 	{
+		"name": "nmkr/config/global/base_url",
+		"type": TYPE_STRING,
+		"value": "https://studio-api.nmkr.io",
+		"hint_string": "Base URL for API calls",
+	},
+	{
 		"name": "nmkr/config/global/api_keys",
 		"type": TYPE_PACKED_STRING_ARRAY,
 		"value": [],

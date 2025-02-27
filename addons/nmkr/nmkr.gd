@@ -187,6 +187,7 @@ const BASE_URL := "https://studio-api.nmkr.io"
 
 var _apiKeys: PackedStringArray = []
 var _debug: bool
+var _base_url: String
 var _key := ""
 var _result
 
@@ -211,6 +212,8 @@ var result:
 
 
 func _ready():
+	_base_url = ProjectSettings.get_setting("nmkr/config/global/base_url", BASE_URL)
+	
 	var keys: PackedStringArray = ProjectSettings.get_setting("nmkr/config/global/api_keys", [])
 	if keys.size() == 0:
 		push_warning("NMKR: API Keys non configured in Project Settings")
@@ -251,7 +254,7 @@ func add_payout_wallet(walletaddress := "") -> Dictionary:
 	elif not walletaddress.begins_with("addr"):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/AddPayoutWallet/" + walletaddress
+		var url := _base_url + "/v2/AddPayoutWallet/" + walletaddress
 		_request(url, sig)
 	
 	await sig
@@ -267,7 +270,7 @@ func get_customer_transactions(customerid: int = 0, optional := {}) -> Array:
 	elif customerid == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetCustomerTransactions/" + str(customerid)
+		var url := _base_url + "/v2/GetCustomerTransactions/" + str(customerid)
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
@@ -281,7 +284,7 @@ func get_mint_coupon_balance() -> Dictionary:
 	if current_key < 0:
 		_trigger_error(sig)
 	else:
-		var url := BASE_URL + "/v2/GetMintCouponBalance"
+		var url := _base_url + "/v2/GetMintCouponBalance"
 		_request(url, sig)
 	
 	await sig
@@ -295,7 +298,7 @@ func get_payout_wallets() -> Array:
 	if current_key < 0:
 		_trigger_error(sig)
 	else:
-		var url := BASE_URL + "/v2/GetPayoutWallets"
+		var url := _base_url + "/v2/GetPayoutWallets"
 		_request(url, sig)
 	
 	await sig
@@ -313,7 +316,7 @@ func block_unblock_nft(nftuid := "", block_nft := true) -> Dictionary:
 	elif nftuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/BlockUnblockNft/" + nftuid + "/" + str(block_nft)
+		var url := _base_url + "/v2/BlockUnblockNft/" + nftuid + "/" + str(block_nft)
 		_request(url, sig)
 	
 	await sig
@@ -329,7 +332,7 @@ func check_metadata(nftuid := "", data := {}) -> Dictionary:
 	elif nftuid.length() == 0 or not data.has("metadata"):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckMetadata/" + nftuid
+		var url := _base_url + "/v2/CheckMetadata/" + nftuid
 		_request(url, sig, data)
 	
 	await sig
@@ -345,7 +348,7 @@ func delete_all_nfts_from_project(projectuid := "") -> Dictionary:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/DeleteAllNftsFromProject/" + projectuid
+		var url := _base_url + "/v2/DeleteAllNftsFromProject/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -361,7 +364,7 @@ func delete_nft(nftuid := "") -> Dictionary:
 	elif nftuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/DeleteNft/" + nftuid
+		var url := _base_url + "/v2/DeleteNft/" + nftuid
 		_request(url, sig)
 	
 	await sig
@@ -377,7 +380,7 @@ func duplicate_nft(nftuid := "", data := {}) -> Dictionary:
 	elif nftuid.length() == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/DuplicateNft/" + nftuid
+		var url := _base_url + "/v2/DuplicateNft/" + nftuid
 		_request(url, sig, data)
 	
 	await sig
@@ -393,7 +396,7 @@ func get_nft_details_by_id(nftuid := "") -> Dictionary:
 	elif nftuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetNftDetailsById/" + nftuid
+		var url := _base_url + "/v2/GetNftDetailsById/" + nftuid
 		_request(url, sig)
 	
 	await sig
@@ -409,7 +412,7 @@ func get_nft_details_by_tokenname(projectuid := "", nftname := "") -> Dictionary
 	elif projectuid.length() == 0 or nftname == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetNftDetailsByTokenname/" + projectuid + "/" + nftname
+		var url := _base_url + "/v2/GetNftDetailsByTokenname/" + projectuid + "/" + nftname
 		_request(url, sig)
 	
 	await sig
@@ -425,7 +428,7 @@ func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, opt
 	elif projectuid.length() == 0 or state.length() == 0 or count <= 0 or page < 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetNfts/" + projectuid + "/" + state + "/" + str(count) + "/" + str(page)
+		var url := _base_url + "/v2/GetNfts/" + projectuid + "/" + state + "/" + str(count) + "/" + str(page)
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
@@ -444,7 +447,7 @@ func update_metadata(projectuid := "", nftuid := "", data := {}) -> Dictionary:
 	elif projectuid.length() == 0 or nftuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UpdateMetadata/" + projectuid + "/" + nftuid
+		var url := _base_url + "/v2/UpdateMetadata/" + projectuid + "/" + nftuid
 		_request(url, sig, data)
 	
 	await sig
@@ -460,8 +463,8 @@ func upload_nft(projectuid := "", data := {}, optional := {}) -> Dictionary:
 	elif projectuid.length() == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UploadNft/" + projectuid
-		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
+		var url := _base_url + "/v2/UploadNft/" + projectuid
+		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig, data)
 	
 	await sig
 	return result
@@ -478,7 +481,7 @@ func cancel_address_reservation(projectuid := "", paymentaddress := "") -> Dicti
 	elif projectuid.length() == 0 or paymentaddress == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CancelAddressReservation/" + projectuid + "/" + paymentaddress
+		var url := _base_url + "/v2/CancelAddressReservation/" + projectuid + "/" + paymentaddress
 		_request(url, sig)
 	
 	await sig
@@ -495,7 +498,7 @@ func check_address(projectuid := "", address := "") -> Dictionary:
 	elif projectuid.length() == 0 or address == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckAddress/" + projectuid + "/" + address
+		var url := _base_url + "/v2/CheckAddress/" + projectuid + "/" + address
 		_request(url, sig)
 	
 	await sig
@@ -512,7 +515,7 @@ func check_address_with_customproperty(projectuid := "", customproperty := "") -
 	elif projectuid.length() == 0 or customproperty == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckAddressWithCustomproperty/" + projectuid + "/" + customproperty
+		var url := _base_url + "/v2/CheckAddressWithCustomproperty/" + projectuid + "/" + customproperty
 		_request(url, sig)
 	
 	await sig
@@ -529,7 +532,7 @@ func get_payment_address_for_random_nft_sale(projectuid := "", countnft: int = 1
 	elif projectuid.length() == 0 or countnft < 1:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetPaymentAddressForRandomNftSale/" + projectuid + "/" + str(countnft)
+		var url := _base_url + "/v2/GetPaymentAddressForRandomNftSale/" + projectuid + "/" + str(countnft)
 		if lovelace >= 0:
 			url += "/" + str(lovelace)
 		
@@ -550,7 +553,7 @@ func get_payment_address_for_specific_nft_sale(nftuid := "", tokencount: int = 0
 	or (data.size() > 0 and (nftuid.length() > 0 or tokencount > 0 or lovelace >= 0)):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetPaymentAddressForSpecificNftSale"
+		var url := _base_url + "/v2/GetPaymentAddressForSpecificNftSale"
 		if (data.size() > 0):
 			_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig, data)
 		else:
@@ -574,7 +577,7 @@ func check_if_eligible_for_discount(projectuid := "", address := "", optional :=
 	elif projectuid.length() == 0 or address == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckIfEligibleForDiscount/" + projectuid + "/" + address
+		var url := _base_url + "/v2/CheckIfEligibleForDiscount/" + projectuid + "/" + address
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
@@ -590,7 +593,7 @@ func check_if_sale_conditions_met(projectuid := "", address := "", countnft: int
 	elif projectuid.length() == 0 or address.length() == 0 or countnft == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckIfSaleCondtionsMet/" + projectuid + "/" + address + "/" + str(countnft)
+		var url := _base_url + "/v2/CheckIfSaleCondtionsMet/" + projectuid + "/" + address + "/" + str(countnft)
 		_request(url, sig)
 	
 	await sig
@@ -606,7 +609,7 @@ func check_utxo(address := "") -> Dictionary:
 	elif address == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckUtxo/" + address
+		var url := _base_url + "/v2/CheckUtxo/" + address
 		_request(url, sig)
 	
 	await sig
@@ -622,7 +625,7 @@ func get_active_directsale_listings(stakeaddress := "") -> Dictionary:
 	elif stakeaddress == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetActiveDirectsaleListings/" + stakeaddress
+		var url := _base_url + "/v2/GetActiveDirectsaleListings/" + stakeaddress
 		_request(url, sig)
 	
 	await sig
@@ -636,7 +639,7 @@ func get_ada_rates() -> Dictionary:
 	if current_key < 0:
 		_trigger_error(sig)
 	else:
-		var url := BASE_URL + "/v2/GetAdaRates"
+		var url := _base_url + "/v2/GetAdaRates"
 		_request(url, sig)
 	
 	await sig
@@ -652,7 +655,7 @@ func get_all_assets_in_wallet(address := "") -> Array:
 	elif address == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetAllAssetsInWallet/" + address
+		var url := _base_url + "/v2/GetAllAssetsInWallet/" + address
 		_request(url, sig)
 	
 	await sig
@@ -670,7 +673,7 @@ func get_amount_of_specific_token_in_wallet(address := "", policyid := "", token
 	or (data.size > 0 and (address != "" or policyid == "" or tokenname == "")):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetAmountOfSpecificTokenInWallet/"
+		var url := _base_url + "/v2/GetAmountOfSpecificTokenInWallet/"
 		
 		if data.size() == 0:
 			url += address + "/" + policyid + "/" + tokenname
@@ -692,7 +695,7 @@ func get_cardano_token_registry_information(policyid := "", tokenname := "") -> 
 	elif policyid.length() == 0 or tokenname == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetCardanoTokenRegistryInformation/" + policyid + "/" + tokenname
+		var url := _base_url + "/v2/GetCardanoTokenRegistryInformation/" + policyid + "/" + tokenname
 		_request(url, sig)
 	
 	await sig
@@ -708,7 +711,7 @@ func get_metadata_for_token(policyid := "", tokennamehex := "") -> Dictionary:
 	elif policyid.length() == 0 or tokennamehex == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetMetadataForToken/" + policyid + "/" + tokennamehex
+		var url := _base_url + "/v2/GetMetadataForToken/" + policyid + "/" + tokennamehex
 		_request(url, sig)
 	
 	await sig
@@ -724,7 +727,7 @@ func get_policy_snapshot(policyid := "", optional := {}) -> Dictionary:
 	elif policyid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetPolicySnapshot/" + policyid 
+		var url := _base_url + "/v2/GetPolicySnapshot/" + policyid 
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
@@ -740,7 +743,7 @@ func get_preview_image_for_token(policyid := "", tokennamehex := "") -> Dictiona
 	elif policyid.length() == 0 or tokennamehex == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetPreviewImageForToken/" + policyid + "/" + tokennamehex
+		var url := _base_url + "/v2/GetPreviewImageForToken/" + policyid + "/" + tokennamehex
 		_request(url, sig)
 	
 	await sig
@@ -756,7 +759,7 @@ func get_rates(coin := "ADA") -> Dictionary:
 	elif coin == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetRates?coin=" + coin
+		var url := _base_url + "/v2/GetRates?coin=" + coin
 		_request(url, sig)
 	
 	await sig
@@ -772,7 +775,7 @@ func get_royalty_information(policyid := "") -> Dictionary:
 	elif policyid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetRoyaltyInformation/" + policyid
+		var url := _base_url + "/v2/GetRoyaltyInformation/" + policyid
 		_request(url, sig)
 	
 	await sig
@@ -786,7 +789,7 @@ func get_solana_rates() -> Dictionary:
 	if current_key < 0:
 		_trigger_error(sig)
 	else:
-		var url := BASE_URL + "/v2/GetSolanaRates"
+		var url := _base_url + "/v2/GetSolanaRates"
 		_request(url, sig)
 	
 	await sig
@@ -804,7 +807,7 @@ func check_wallet_validation(validationuid := "") -> Dictionary:
 	elif validationuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CheckWalletValidation/" + validationuid
+		var url := _base_url + "/v2/CheckWalletValidation/" + validationuid
 		_request(url, sig)
 	
 	await sig
@@ -818,7 +821,7 @@ func get_wallet_validation_address(validationname := "") -> Dictionary:
 	if current_key < 0:
 		_trigger_error(sig, SdkError.INVALID_KEY)
 	else:
-		var url := BASE_URL + "/v2/GetWalletValidationAddress"
+		var url := _base_url + "/v2/GetWalletValidationAddress"
 		
 		if validationname != "":
 			url += "/" + validationname
@@ -840,7 +843,7 @@ func create_auction(customerid := "", data := {}) -> Dictionary:
 	elif customerid == "" or data.size == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CreateAuction/" + customerid
+		var url := _base_url + "/v2/CreateAuction/" + customerid
 		_request(url, sig, data)
 	
 	await sig
@@ -856,7 +859,7 @@ func delete_auction(auctionuid := "") -> Dictionary:
 	elif auctionuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/DeleteAuction/" + auctionuid
+		var url := _base_url + "/v2/DeleteAuction/" + auctionuid
 		_request(url, sig)
 	
 	await sig
@@ -872,7 +875,7 @@ func get_all_auctions(customerid := "") -> Array:
 	elif customerid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetAllAuctions/" + customerid
+		var url := _base_url + "/v2/GetAllAuctions/" + customerid
 		_request(url, sig)
 	
 	await sig
@@ -888,7 +891,7 @@ func get_auction_state(auctionuid := "") -> Dictionary:
 	elif auctionuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetAuctionState/" + auctionuid
+		var url := _base_url + "/v2/GetAuctionState/" + auctionuid
 		_request(url, sig)
 	
 	await sig
@@ -906,7 +909,7 @@ func create_burning_address(projectuid := "", addressactiveinhours := "") -> Dic
 	elif projectuid.length() == 0 or addressactiveinhours == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CreateBurningAddress/" + projectuid + "/" + addressactiveinhours
+		var url := _base_url + "/v2/CreateBurningAddress/" + projectuid + "/" + addressactiveinhours
 		_request(url, sig)
 	
 	await sig
@@ -922,7 +925,7 @@ func create_project(data := {}) -> Dictionary:
 	elif data.size() == 0 or not data.has("projectname"):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CreateProject"
+		var url := _base_url + "/v2/CreateProject"
 		_request(url, sig, data)
 	
 	await sig
@@ -938,7 +941,7 @@ func delete_project(projectuid := "") -> Dictionary:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/DeleteProject/" + projectuid
+		var url := _base_url + "/v2/DeleteProject/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -954,7 +957,7 @@ func get_counts(projectuid := "") -> Dictionary:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetCounts/" + projectuid
+		var url := _base_url + "/v2/GetCounts/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -970,7 +973,7 @@ func get_discounts(projectuid := "") -> Array:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetDiscounts/" + projectuid
+		var url := _base_url + "/v2/GetDiscounts/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -986,7 +989,7 @@ func get_identity_accounts(policyid := "") -> Dictionary:
 	elif policyid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetIdentityAccounts/" + policyid
+		var url := _base_url + "/v2/GetIdentityAccounts/" + policyid
 		_request(url, sig)
 	
 	await sig
@@ -1002,7 +1005,7 @@ func get_notifications(projectuid := "") -> Array:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetNotifications/" + projectuid
+		var url := _base_url + "/v2/GetNotifications/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -1018,7 +1021,7 @@ func get_pricelist(projectuid := "") -> Dictionary:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/Pricelist/" + projectuid
+		var url := _base_url + "/v2/Pricelist/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -1034,7 +1037,7 @@ func get_project_details(projectuid := "") -> Dictionary:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetProjectDetails/" + projectuid
+		var url := _base_url + "/v2/GetProjectDetails/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -1050,7 +1053,7 @@ func get_project_transactions(projectuid := "", optional := {}) -> Array:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetProjectTransactions/" + projectuid 
+		var url := _base_url + "/v2/GetProjectTransactions/" + projectuid 
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
@@ -1066,7 +1069,7 @@ func get_refunds(projectuid := "", optional := {}) -> Array:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetRefunds/" + projectuid 
+		var url := _base_url + "/v2/GetRefunds/" + projectuid 
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
@@ -1082,7 +1085,7 @@ func get_sale_conditions(projectuid := "") -> Array:
 	elif projectuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetSaleConditions/" + projectuid
+		var url := _base_url + "/v2/GetSaleConditions/" + projectuid
 		_request(url, sig)
 	
 	await sig
@@ -1099,7 +1102,7 @@ func list_projects(count: int = 0, page: int = 0, optional := {}) -> Array:
 	elif count < 0 or page < 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/ListProjects"
+		var url := _base_url + "/v2/ListProjects"
 		if count > 0 and page >= 0:
 			url += "/" + str(count) + "/" + str(page)
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
@@ -1117,7 +1120,7 @@ func update_discounts(projectuid := "", data := {}) -> Dictionary:
 	elif projectuid.length() == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UpdateDiscounts/" + projectuid
+		var url := _base_url + "/v2/UpdateDiscounts/" + projectuid
 		_request(url, sig, data, HTTPClient.METHOD_PUT)
 	
 	await sig
@@ -1133,7 +1136,7 @@ func update_notifications(projectuid := "", data: Array = []) -> Dictionary:
 	elif projectuid.length() == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UpdateNotifications/" + projectuid
+		var url := _base_url + "/v2/UpdateNotifications/" + projectuid
 		_request(url, sig, data)
 	
 	await sig
@@ -1149,7 +1152,7 @@ func update_pricelist(projectuid := "", data := {}) -> Dictionary:
 	elif projectuid.length() == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UpdateDiscounts/" + projectuid
+		var url := _base_url + "/v2/UpdateDiscounts/" + projectuid
 		_request(url, sig, data, HTTPClient.METHOD_PUT)
 	
 	await sig
@@ -1165,7 +1168,7 @@ func update_sale_conditions(projectuid := "", data: Array = []) -> Dictionary:
 	elif projectuid.length() == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UpdateSaleConditions/" + projectuid
+		var url := _base_url + "/v2/UpdateSaleConditions/" + projectuid
 		_request(url, sig, data, HTTPClient.METHOD_PUT)
 	
 	await sig
@@ -1183,7 +1186,7 @@ func create_split_address(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CreateSplitAddress/" + str(customerid)
+		var url := _base_url + "/v2/CreateSplitAddress/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1199,7 +1202,7 @@ func get_split_addresses(customerid: int = 0) -> Array:
 	elif customerid == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetSplitAddresses/" + str(customerid)
+		var url := _base_url + "/v2/GetSplitAddresses/" + str(customerid)
 		_request(url, sig)
 	
 	await sig
@@ -1215,7 +1218,7 @@ func update_split_address(customerid: int = 0, address := "", data := {}) -> Dic
 	elif customerid == 0 or address == "" or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UpdateSplitAddress/" + str(customerid) + "/" + address
+		var url := _base_url + "/v2/UpdateSplitAddress/" + str(customerid) + "/" + address
 		_request(url, sig, data, HTTPClient.METHOD_PUT)
 	
 	await sig
@@ -1233,7 +1236,7 @@ func create_vesting_address(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CreateSplitAddress/" + str(customerid)
+		var url := _base_url + "/v2/CreateSplitAddress/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1249,7 +1252,7 @@ func get_utxo_from_vesting_address(customerid: int = 0, address := "") -> Dictio
 	elif customerid == 0 or address == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetUtxoFromVestingAddress/" + str(customerid) + "/" + address
+		var url := _base_url + "/v2/GetUtxoFromVestingAddress/" + str(customerid) + "/" + address
 		_request(url, sig)
 	
 	await sig
@@ -1265,7 +1268,7 @@ func get_vesting_addresses(customerid: int = 0) -> Array:
 	elif customerid == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetVestingAddresses/" + str(customerid)
+		var url := _base_url + "/v2/GetVestingAddresses/" + str(customerid)
 		_request(url, sig)
 	
 	await sig
@@ -1283,7 +1286,7 @@ func create_wallet(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/CreateWallet/" + str(customerid)
+		var url := _base_url + "/v2/CreateWallet/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1299,7 +1302,7 @@ func get_key_hash(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetKeyHash/" + str(customerid)
+		var url := _base_url + "/v2/GetKeyHash/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1315,7 +1318,7 @@ func get_wallet_utxo(address := "") -> Dictionary:
 	elif address == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetWalletUtxo/" + address
+		var url := _base_url + "/v2/GetWalletUtxo/" + address
 		_request(url, sig)
 	
 	await sig
@@ -1331,7 +1334,7 @@ func import_wallet(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/ImportWallet/" + str(customerid)
+		var url := _base_url + "/v2/ImportWallet/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1347,7 +1350,7 @@ func list_all_wallets(customerid: int = 0) -> Array:
 	elif customerid == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/ListAllWallets/" + str(customerid)
+		var url := _base_url + "/v2/ListAllWallets/" + str(customerid)
 		_request(url, sig)
 	
 	await sig
@@ -1363,7 +1366,7 @@ func make_transaction(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/MakeTransaction/" + str(customerid)
+		var url := _base_url + "/v2/MakeTransaction/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1379,7 +1382,7 @@ func send_all_assets(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/SendAllAssets/" + str(customerid)
+		var url := _base_url + "/v2/SendAllAssets/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
@@ -1397,7 +1400,7 @@ func get_nmkr_pay_link(data := {}) -> Dictionary:
 	elif data.size() == 0 or not data.has("projectUid"):
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetNmkrPayLink"
+		var url := _base_url + "/v2/GetNmkrPayLink"
 		_request(url, sig, data)
 	
 	await sig
@@ -1413,7 +1416,7 @@ func get_nmkr_pay_status(paymenttransactionuid := "") -> Dictionary:
 	elif paymenttransactionuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/GetNmkrPayStatus/" + paymenttransactionuid
+		var url := _base_url + "/v2/GetNmkrPayStatus/" + paymenttransactionuid
 		_request(url, sig)
 	
 	await sig
@@ -1428,7 +1431,7 @@ func get_public_mints() -> Dictionary:
 	if current_key < 0:
 		_trigger_error(sig)
 	else:
-		var url := BASE_URL + "/v2/GetPublicMints"
+		var url := _base_url + "/v2/GetPublicMints"
 		_request(url, sig)
 	
 	await sig
@@ -1441,7 +1444,7 @@ func get_server_state() -> Array:
 	if current_key < 0:
 		_trigger_error(sig)
 	else:
-		var url := BASE_URL + "/v2/GetServerState"
+		var url := _base_url + "/v2/GetServerState"
 		_request(url, sig)
 	
 	await sig
@@ -1455,7 +1458,7 @@ func get_server_state() -> Array:
 func manage_whitelist(projectuid := "", address := "", countofnfts:int = 0, data := {}) -> Dictionary:
 	var sig := manage_whitelist_completed
 	
-	var url := BASE_URL + "/v2/ManageWhitelist/" + projectuid
+	var url := _base_url + "/v2/ManageWhitelist/" + projectuid
 	var method: int = -1
 	if current_key < 0:
 		_trigger_error(sig, SdkError.INVALID_KEY)
@@ -1493,7 +1496,7 @@ func mint_and_send_random(projectuid := "", countnft: int = 0, receiveraddress :
 	elif projectuid == "" or countnft == 0 or receiveraddress == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/MintAndSendRandom/" + projectuid + "/" + str(countnft) + "/" + receiveraddress
+		var url := _base_url + "/v2/MintAndSendRandom/" + projectuid + "/" + str(countnft) + "/" + receiveraddress
 		_request(url, sig)
 	
 	await sig
@@ -1509,7 +1512,7 @@ func mint_and_send_specific(projectuid := "", nftuid := "", tokencount: int = 0,
 	elif projectuid == "" or nftuid == "" or tokencount == 0 or receiveraddress == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/MintAndSendSpecific/" + projectuid + "/" + nftuid + "/" + str(tokencount) + "/" + receiveraddress
+		var url := _base_url + "/v2/MintAndSendSpecific/" + projectuid + "/" + nftuid + "/" + str(tokencount) + "/" + receiveraddress
 		_request(url, sig)
 	
 	await sig
@@ -1525,7 +1528,7 @@ func mint_royalty_token(projectuid := "", royaltyaddress := "", percentage: floa
 	elif projectuid == "" or royaltyaddress == "" or percentage < 0 or percentage > 100:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/MintRoyaltyToken/" + projectuid + "/" + royaltyaddress + "/" + str(percentage)
+		var url := _base_url + "/v2/MintRoyaltyToken/" + projectuid + "/" + royaltyaddress + "/" + str(percentage)
 		_request(url, sig)
 	
 	await sig
@@ -1541,7 +1544,7 @@ func remint_and_burn(projectuid := "", nftuid := "") -> Dictionary:
 	elif projectuid == "" or nftuid == "":
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/RemintAndBurn/" + projectuid + "/" + nftuid
+		var url := _base_url + "/v2/RemintAndBurn/" + projectuid + "/" + nftuid
 		_request(url, sig)
 	
 	await sig
@@ -1559,7 +1562,7 @@ func upload_to_ipfs(customerid: int = 0, data := {}) -> Dictionary:
 	elif customerid == 0 or data.size() == 0:
 		_trigger_error(sig, SdkError.INVALID_PARAMETERS)
 	else:
-		var url := BASE_URL + "/v2/UploadToIpfs/" + str(customerid)
+		var url := _base_url + "/v2/UploadToIpfs/" + str(customerid)
 		_request(url, sig, data)
 	
 	await sig
