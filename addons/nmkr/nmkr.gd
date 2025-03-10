@@ -80,6 +80,7 @@ class_name NMKR extends Node
 
 # General
 signal completed(result)
+signal error(result)
 # Customer
 signal add_payout_wallet_completed(result: Dictionary)
 signal get_customer_transactions_completed(result: Array)
@@ -274,7 +275,7 @@ func get_customer_transactions(customerid: int = 0, optional := {}) -> Array:
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Returns the count of mint coupons in your account
@@ -302,7 +303,7 @@ func get_payout_wallets() -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 # NFT
@@ -432,10 +433,7 @@ func get_nfts(projectuid := "", state := "", count: int = 0, page: int = -1, opt
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
-	
-	if _result is not Array:
-		_result = [ _result ]
-	return result
+	return result if result is Array else [ result ]
 
 
 ## With this API you can update the Metadata Override for one specific NFT If you leave the field blank, the Metadata override will be deleted and the Metadata from the project will be used.
@@ -659,7 +657,7 @@ func get_all_assets_in_wallet(address := "") -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Returns the quantity of a specific token in a wallet. Leave the "address" field as an empty
@@ -879,7 +877,7 @@ func get_all_auctions(customerid := "") -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Returns the state - and the last bids of a auction project
@@ -977,7 +975,7 @@ func get_discounts(projectuid := "") -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Returns information about the identities (if the identity token was created) of a project
@@ -1009,7 +1007,7 @@ func get_notifications(projectuid := "") -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## You will get the predefined prices for one or more NFTs
@@ -1057,7 +1055,7 @@ func get_project_transactions(projectuid := "", optional := {}) -> Array:
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Returns all refunds of a project
@@ -1073,7 +1071,7 @@ func get_refunds(projectuid := "", optional := {}) -> Array:
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## If you call this funtion, you will get all active saleconditions for this project
@@ -1089,7 +1087,7 @@ func get_sale_conditions(projectuid := "") -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## You will receive a list with all of your projects.[br]
@@ -1108,7 +1106,7 @@ func list_projects(count: int = 0, page: int = 0, optional := {}) -> Array:
 		_request(url if optional.size() == 0 else _get_valid_url(url, optional), sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## With this Controller you can update the discounts of a project. All old entries will be deleted. If you want to clear the discounts, just send an empty array
@@ -1206,7 +1204,7 @@ func get_split_addresses(customerid: int = 0) -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Updates a split address
@@ -1272,7 +1270,7 @@ func get_vesting_addresses(customerid: int = 0) -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 # Managed Wallets
@@ -1354,7 +1352,7 @@ func list_all_wallets(customerid: int = 0) -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 ## Makes a transaction on a managed Wallet
@@ -1448,7 +1446,7 @@ func get_server_state() -> Array:
 		_request(url, sig)
 	
 	await sig
-	return result
+	return result if result is Array else [ result ]
 
 
 # Whitelists
@@ -1639,6 +1637,7 @@ func _on_completed(res: int, code: int, _h: PackedStringArray, body: PackedByteA
 			"code": code,
 			"body": text,
 		}
+		error.emit(_result)
 		
 		if _debug:
 			push_warning(_result)
