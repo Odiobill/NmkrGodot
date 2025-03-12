@@ -186,6 +186,7 @@ enum SdkError {
 ## Base URL for NMKR API requests
 const BASE_URL := "https://studio-api.nmkr.io"
 
+var accept_gzip := true
 var _apiKeys: PackedStringArray = []
 var _debug: bool
 var _base_url: String
@@ -1591,6 +1592,7 @@ func _get_valid_url(url: String, optional := {}) -> String:
 # Performs an http request
 func _request(url: String, sig: Signal, data = {}, method := HTTPClient.METHOD_GET):
 	var http := _create_http_request()
+	
 	var headers = _headers()
 	if data.size() > 0:
 		if method == HTTPClient.METHOD_GET:
@@ -1612,7 +1614,10 @@ func _trigger_error(sig: Signal, code: SdkError = SdkError.INVALID_KEY):
 func _create_http_request() -> HTTPRequest:
 	var _http_request := HTTPRequest.new()
 	add_child(_http_request)
-	_http_request.use_threads = OS.get_name() != "HTML5"
+	_http_request.use_threads = OS.get_name() not in [ "HTML5", "Web" ]
+	if not accept_gzip:
+		_http_request.accept_gzip = false
+
 	return _http_request
 
 
