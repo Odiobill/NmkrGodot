@@ -29,6 +29,22 @@ You can find a video that covers the initial setup instructions here:
 	[Milestone 1 Proof of Achievement](https://youtu.be/zYt-qpAeA-0)
 
 
+## YASG (Yet Another Snake Game) - the official example project
+While you can find a couple of basic scenes to show how to use the *NMKR SDK for Godot* plugin in
+your projects under the "examples" directory, we built a simple but complete game to provide a more
+comprensive scenario that showcases how to implement the most common Web3-related tasks, like:
+	- Create new NFTs
+	- Mint NFTs and deliver them to the user's wallet
+	- Verify users' wallet
+	- Reading the users' wallet to find the required content
+	- Use any FT or NFT as game assets
+	- Use the metadata attached to any NFT for changing game features
+
+YASG, like the plugin itself, is a fully open-source project released under the MIT license,
+and available on GitHub at the following address:
+	[YASG](https://github.com/Odiobill/YASG)
+
+
 ## Code Examples
 Each available method will emit a signal as soon as the request is completed. You can either
 *await* the corresponding signal or *await* directly on the function call for synchronous requests,
